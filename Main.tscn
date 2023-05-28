@@ -1,8 +1,10 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://icon.png" type="Texture" id=1]
 [ext_resource path="res://Player.gd" type="Script" id=2]
+[ext_resource path="res://trap.png" type="Texture" id=3]
 [ext_resource path="res://Soul.gd" type="Script" id=4]
+[ext_resource path="res://Trap.gd" type="Script" id=5]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 26.0192
@@ -11,6 +13,8 @@ radius = 26.0192
 extents = Vector2( 523.5, 306.75 )
 
 [sub_resource type="RectangleShape2D" id=4]
+
+[sub_resource type="RectangleShape2D" id=5]
 
 [node name="Main" type="Node2D"]
 position = Vector2( 522, 308 )
@@ -30,7 +34,6 @@ position = Vector2( -1, 0 )
 shape = SubResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-visible = false
 position = Vector2( 0, -3 )
 shape = SubResource( 3 )
 
@@ -40,4 +43,15 @@ script = ExtResource( 4 )
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D/Soul"]
 shape = SubResource( 4 )
 
+[node name="Trap" type="Area2D" parent="Area2D"]
+script = ExtResource( 5 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D/Trap"]
+shape = SubResource( 5 )
+
+[node name="Sprite" type="Sprite" parent="Area2D/Trap"]
+texture = ExtResource( 3 )
+
 [connection signal="soul_switch" from="Area2D/Player" to="Area2D/Soul" method="_on_Player_soul_switch"]
+[connection signal="area_entered" from="Area2D/Trap" to="Area2D/Trap" method="_on_Trap_area_entered"]
+[connection signal="area_exited" from="Area2D/Trap" to="Area2D/Trap" method="_on_Trap_area_exited"]

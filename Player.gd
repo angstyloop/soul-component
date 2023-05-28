@@ -87,10 +87,6 @@ func soul_push_back(soul_index):
     update_stats(soul)  
         
 func move(direction_index, delta):
-    if (Vector2.ZERO - direction).length() < 0.000001:
-        direction = directions[direction_index]
-    else:
-        direction = (direction + directions[direction_index]) / sqrt(2)
     if speed[direction_index] == 0:
         speed[direction_index] = initial_speed
     
@@ -98,6 +94,13 @@ func move(direction_index, delta):
     
     if speed[direction_index]  > speed_limit:
         speed[direction_index]  = speed_limit
+    
+    var v = Vector2.UP * speed[0] + Vector2.RIGHT * speed[1] + Vector2.DOWN * speed[2] + Vector2.LEFT * speed[3]
+    
+    if v.length() > 0.0001:
+        direction = v / v.length()
+
+    rotation = -direction.angle_to(directions[2])
 
 func get_basic_projectile(soul):
     var soul_sorted = [soul[0], soul[1], soul[2], soul[3]]
@@ -161,9 +164,12 @@ func _process(delta):
             speed[i] -= drag * speed[i] * delta   
         else:
             speed[i] -= drag * stopping_speed * delta
-            
-    position += (Vector2.UP * speed[0] + Vector2.RIGHT * speed[1] + Vector2.DOWN * speed[2] + Vector2.LEFT * speed[3]) * delta
-    rotation = -direction.angle_to(directions[2])
+    
+        if speed[i] < 0:
+            speed[i] = 0
+    
+    var v = Vector2.UP * speed[0] + Vector2.RIGHT * speed[1] + Vector2.DOWN * speed[2] + Vector2.LEFT * speed[3]
+    position += v * delta
 
     if Input.is_action_just_pressed("ui_accept"):
         attack()

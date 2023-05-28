@@ -15,15 +15,23 @@ var stopping_speed
 
 var health
 var armor
+var invincible
+
+var fire_shield = null
+var fire_shield_counter = 0
+var fire_shield_cooldown_counter = 0
 
 var type = "p"
+
+var special = {}
 
 const directions = [Vector2.UP, Vector2.RIGHT, Vector2.DOWN, Vector2.LEFT]
 const len_soul = 4
 const base_drag = 4
 const BasicProjectile = preload("res://BasicProjectile.tscn")
 const basic_projectiles = {"0_0_0_0": preload("res://basic_projectile_0_0_0_0.png"), "0_0_0_1": preload("res://basic_projectile_0_0_0_1.png"), "0_0_0_2": preload("res://basic_projectile_0_0_0_2.png"), "0_0_0_3": preload("res://basic_projectile_0_0_0_3.png"), "0_0_1_1": preload("res://basic_projectile_0_0_1_1.png"), "0_0_1_2": preload("res://basic_projectile_0_0_1_2.png"), "0_0_1_3": preload("res://basic_projectile_0_0_1_3.png"), "0_0_2_2": preload("res://basic_projectile_0_0_2_2.png"), "0_0_2_3": preload("res://basic_projectile_0_0_2_3.png"), "0_0_3_3": preload("res://basic_projectile_0_0_3_3.png"), "0_1_1_1": preload("res://basic_projectile_0_1_1_1.png"), "0_1_1_2": preload("res://basic_projectile_0_1_1_2.png"), "0_1_1_3": preload("res://basic_projectile_0_1_1_3.png"), "0_1_2_2": preload("res://basic_projectile_0_1_2_2.png"), "0_1_2_3": preload("res://basic_projectile_0_1_2_3.png"), "0_1_3_3": preload("res://basic_projectile_0_1_3_3.png"), "0_2_2_2": preload("res://basic_projectile_0_2_2_2.png"), "0_2_2_3": preload("res://basic_projectile_0_2_2_3.png"), "0_2_3_3": preload("res://basic_projectile_0_2_3_3.png"), "0_3_3_3": preload("res://basic_projectile_0_3_3_3.png"), "1_1_1_1": preload("res://basic_projectile_1_1_1_1.png"), "1_1_1_2": preload("res://basic_projectile_1_1_1_2.png"), "1_1_1_3": preload("res://basic_projectile_1_1_1_3.png"), "1_1_2_2": preload("res://basic_projectile_1_1_2_2.png"), "1_1_2_3": preload("res://basic_projectile_1_1_2_3.png"), "1_1_3_3": preload("res://basic_projectile_1_1_3_3.png"), "1_2_2_2": preload("res://basic_projectile_1_2_2_2.png"), "1_2_2_3": preload("res://basic_projectile_1_2_2_3.png"), "1_2_3_3": preload("res://basic_projectile_1_2_3_3.png"), "1_3_3_3": preload("res://basic_projectile_1_3_3_3.png"), "2_2_2_2": preload("res://basic_projectile_2_2_2_2.png"), "2_2_2_3": preload("res://basic_projectile_2_2_2_3.png"), "2_2_3_3": preload("res://basic_projectile_2_2_3_3.png"), "2_3_3_3": preload("res://basic_projectile_2_3_3_3.png"), "3_3_3_3": preload("res://basic_projectile_3_3_3_3.png")}
-    
+const FireShield = preload("res://FireShield.tscn")
+
 signal soul_switch(soul)
 signal player_attack(soul)
 
@@ -37,6 +45,11 @@ func _init():
     direction = Vector2.ZERO
     
     health = 10
+    
+    invincible = false
+    
+    fire_shield_counter = 0
+    fire_shield_cooldown_counter = 0
     
     update_stats(soul)
 
@@ -120,7 +133,40 @@ func attack():
     projectile.soul = soul.duplicate()
     get_parent().add_child(projectile)
 
+func burn(damage):
+    var animated_sprite = get_node("AnimatedSprite")
+    animated_sprite.play("burn")
+    health -= damage
+
+func use_fire_shield():
+    if fire_shield_cooldown_counter > 0:
+        burn(1)
+    else:
+        fire_shield_cooldown_counter = 20
+        fire_shield_counter = 10
+        invincible = true
+        fire_shield = FireShield.instance()
+        add_child(fire_shield)
+
+func disable_fire_shield():
+    invincible = false
+    if fire_shield != null:
+        print("removing fire shield")
+        remove_child(fire_shield)
+    fire_shield = null
+    fire_shield_counter = 0
+
+func use_soul_special():
+    var soul_string = "{0}_{1}_{2}_{3}".format([soul[0], soul[1], soul[2], soul[3]])
+    if soul_string == "0_0_0_0":
+        use_fire_shield()
+    else:
+        attack()
+
 func _process(delta):
+    if Input.is_action_just_pressed("ui_cancel"):
+        use_soul_special()
+    
     if Input.is_action_just_pressed("ui_home"):
         soul_push_back(0)
     
@@ -180,6 +226,9 @@ func _process(delta):
         attack()
         
 func take_damage(hit_base_damage, hit_soul):
+    if invincible:
+        return
+        
     var damage = hit_base_damage
     for i in hit_soul:
         if i == 3:
@@ -214,3 +263,16 @@ func _on_Player_area_entered(area):
             take_damage(area.base_damage, area.soul)
             area.queue_free()
     pass # Replace with function body.
+
+
+func _on_Timer_timeout():
+    if fire_shield_counter > 0:
+        fire_shield_counter -= 1
+    else:
+        disable_fire_shield()
+
+func _on_AnimatedSprite_animation_finished():
+    var animated_sprite = get_node("AnimatedSprite")
+    if animated_sprite.animation != "default":
+        animated_sprite.animation = "default"
+        animated_sprite.play()

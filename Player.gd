@@ -9,8 +9,10 @@ const initial_speed = 1
 const speed_limit = 10000
 const initial_acceleration = 5000
 const acceleration_growth = 100
-const drag = 10
+var drag
 const stopping_speed = 250
+
+signal soul_switch(soul)
 
 func _init():
     var size = OS.get_real_window_size()
@@ -19,11 +21,13 @@ func _init():
     speed = [0, 0, 0, 0]
     direction = Vector2.ZERO
     soul = [0, 0, 0, 0]
+    drag = 10
 
-func soul_push_back(el):
+func soul_push_back(soul_index):
     for i in len_soul - 1:
         soul[i] = soul[i + 1]
-    soul[len_soul - 1] = el
+    soul[len_soul - 1] = soul_index
+    emit_signal("soul_switch", soul)
         
 func move(direction_index, delta):
         if speed[direction_index] == 0:
@@ -48,22 +52,22 @@ func _process(delta):
     if Input.is_action_pressed("ui_left"):
         move(3, delta)
     
-    if Input.is_action_pressed("ui_home"):
+    if Input.is_action_just_pressed("ui_home"):
         soul_push_back(0)
         print(soul)
         pass
     
-    if Input.is_action_pressed("ui_page_up"):
+    if Input.is_action_just_pressed("ui_page_up"):
         soul_push_back(1)
         print(soul)
         pass
     
-    if Input.is_action_pressed("ui_page_down"):
+    if Input.is_action_just_pressed("ui_page_down"):
         soul_push_back(2)
         print(soul)
         pass
         
-    if Input.is_action_pressed("ui_end"):
+    if Input.is_action_just_pressed("ui_end"):
         soul_push_back(3)
         print(soul)
         pass
@@ -77,11 +81,6 @@ func _process(delta):
             speed[i] -= drag * speed[i] * delta   
         else:
             speed[i] -= drag * stopping_speed * delta
-        
+            
     position += (Vector2.UP * speed[0] + Vector2.RIGHT * speed[1] + Vector2.DOWN * speed[2] + Vector2.LEFT * speed[3]) * delta
 
-func _on_Player_area_entered(_area):
-    print("hi")
-    
-func _on_Player_area_exited(_area):
-    print("bye")

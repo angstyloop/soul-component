@@ -104,7 +104,7 @@ func move(direction_index, delta):
 
     rotation = -direction.angle_to(directions[2])
 
-func get_basic_projectile(soul):
+func get_basic_projectile_texture(soul):
     var soul_sorted = [soul[0], soul[1], soul[2], soul[3]]
     soul_sorted.sort()
     return basic_projectiles["{0}_{1}_{2}_{3}".format([soul_sorted[0], soul_sorted[1], soul_sorted[2], soul_sorted[3]])]
@@ -114,7 +114,8 @@ func attack():
     projectile.direction = Vector2(direction[0], direction[1])
     projectile.position = Vector2(position[0], position[1])
     projectile.speed = [speed[0], speed[1], speed[2], speed[3]]
-    projectile.get_node("Sprite").texture = get_basic_projectile(soul)
+    projectile.get_node("Sprite").texture = get_basic_projectile_texture(soul)
+    projectile.soul = soul.duplicate()
     get_parent().add_child(projectile)
 
 func _process(delta):

@@ -100,8 +100,9 @@ func move(direction_index, delta):
         speed[direction_index]  = speed_limit
 
 func get_basic_projectile(soul):
-    var soul_sorted = soul.sort()
-    return basic_projectiles["{0}_{1}_{2}_{3}".format([soul[0], soul[1], soul[2], soul[3]])]
+    var soul_sorted = [soul[0], soul[1], soul[2], soul[3]]
+    soul_sorted.sort()
+    return basic_projectiles["{0}_{1}_{2}_{3}".format([soul_sorted[0], soul_sorted[1], soul_sorted[2], soul_sorted[3]])]
 
 func attack():
     var projectile = BasicProjectile.instance()

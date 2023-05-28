@@ -19,8 +19,10 @@ var armor
 const directions = [Vector2.UP, Vector2.RIGHT, Vector2.DOWN, Vector2.LEFT]
 const len_soul = 4
 const base_drag = 4
+const BasicProjectile = preload("res://BasicProjectile.tscn")
 
 signal soul_switch(soul)
+signal player_attack(soul)
 
 func _init():
     window_size = OS.get_real_window_size()
@@ -95,7 +97,13 @@ func move(direction_index, delta):
     
     if speed[direction_index]  > speed_limit:
         speed[direction_index]  = speed_limit
-    
+
+func attack():
+    var projectile = BasicProjectile.instance()
+    projectile.direction = direction
+    projectile.position = position
+    get_parent().add_child(projectile)
+
 func _process(delta):
     if Input.is_action_just_pressed("ui_home"):
         soul_push_back(0)
@@ -148,3 +156,6 @@ func _process(delta):
             
     position += (Vector2.UP * speed[0] + Vector2.RIGHT * speed[1] + Vector2.DOWN * speed[2] + Vector2.LEFT * speed[3]) * delta
     rotation = -direction.angle_to(directions[2])
+
+    if Input.is_action_just_pressed("ui_accept"):
+        attack()

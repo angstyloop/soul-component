@@ -11,6 +11,9 @@ func _on_Trap_area_entered(area):
         area.direction = Vector2.ZERO
     if "drag" in area:
         area.drag = 40
+    if "type" in area:
+        if area.type == "b":
+            area.queue_free()
 
 func _on_Trap_area_exited(area):
     if "drag" in area:

@@ -16,6 +16,8 @@ var stopping_speed
 var health
 var armor
 
+var type = "p"
+
 const directions = [Vector2.UP, Vector2.RIGHT, Vector2.DOWN, Vector2.LEFT]
 const len_soul = 4
 const base_drag = 4

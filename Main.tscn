@@ -13,8 +13,10 @@ radius = 26.0192
 extents = Vector2( 523.5, 306.75 )
 
 [sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 101.75, 26 )
 
-[sub_resource type="RectangleShape2D" id=5]
+[sub_resource type="CircleShape2D" id=5]
+radius = 21.1896
 
 [node name="Main" type="Node2D"]
 position = Vector2( 522, 308 )
@@ -22,7 +24,7 @@ position = Vector2( 522, 308 )
 [node name="Area2D" type="Area2D" parent="."]
 
 [node name="Player" type="Area2D" parent="Area2D"]
-position = Vector2( -1, -3 )
+position = Vector2( -254, -3 )
 script = ExtResource( 2 )
 
 [node name="PlayerSprite" type="Sprite" parent="Area2D/Player"]
@@ -44,14 +46,24 @@ script = ExtResource( 4 )
 shape = SubResource( 4 )
 
 [node name="Trap" type="Area2D" parent="Area2D"]
+position = Vector2( 235, 1 )
 script = ExtResource( 5 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D/Trap"]
+position = Vector2( 1, -1 )
 shape = SubResource( 5 )
 
 [node name="Sprite" type="Sprite" parent="Area2D/Trap"]
+position = Vector2( 1, 1 )
 texture = ExtResource( 3 )
 
+[node name="Timer" type="Timer" parent="Area2D"]
+process_mode = 0
+wait_time = 0.5
+autostart = true
+
+[connection signal="area_entered" from="Area2D/Player" to="Area2D/Player" method="_on_Player_area_entered"]
 [connection signal="soul_switch" from="Area2D/Player" to="Area2D/Soul" method="_on_Player_soul_switch"]
 [connection signal="area_entered" from="Area2D/Trap" to="Area2D/Trap" method="_on_Trap_area_entered"]
 [connection signal="area_exited" from="Area2D/Trap" to="Area2D/Trap" method="_on_Trap_area_exited"]
+[connection signal="timeout" from="Area2D/Timer" to="Area2D/Trap" method="_on_Timer_timeout"]

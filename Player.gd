@@ -29,12 +29,14 @@ signal player_attack(soul)
 
 func _init():
     window_size = OS.get_real_window_size()
-    position = Vector2(window_size[0] / 2, window_size[1] / 2)
+    #position = Vector2(window_size[0] / 2, window_size[1] / 2)
     
     soul = [0, 0, 0, 0]    
     speed = [0, 0, 0, 0]
     
     direction = Vector2.ZERO
+    
+    health = 10
     
     update_stats(soul)
 
@@ -176,3 +178,39 @@ func _process(delta):
 
     if Input.is_action_just_pressed("ui_accept"):
         attack()
+        
+func take_damage(hit_base_damage, hit_soul):
+    var damage = hit_base_damage
+    for i in hit_soul:
+        if i == 3:
+            pass
+        else:
+            var weakness
+            if i == 0:
+                weakness = 2
+            else:
+                weakness = i - 1
+                
+            for j in soul:
+                if j == weakness:
+                    damage += 1
+        
+    health -= damage
+    
+    print("player hit by projecile soul: {0} {1} {2} {3}".format([hit_soul[0], hit_soul[1], hit_soul[2], hit_soul[3]]))
+    print("took damage: %s" % damage)
+    print("health remaining: %s" % health)
+    
+    if health <= 0:
+        queue_free()
+        game_over()
+
+func game_over():
+    print("game over")
+
+func _on_Player_area_entered(area):
+    if "type" in area:
+        if area.type == "b":
+            take_damage(area.base_damage, area.soul)
+            area.queue_free()
+    pass # Replace with function body.

@@ -100,8 +100,9 @@ func move(direction_index, delta):
 
 func attack():
     var projectile = BasicProjectile.instance()
-    projectile.direction = direction
-    projectile.position = position
+    projectile.direction = Vector2(direction[0], direction[1])
+    projectile.position = Vector2(position[0], position[1])
+    projectile.speed = [speed[0], speed[1], speed[2], speed[3]]
     get_parent().add_child(projectile)
 
 func _process(delta):

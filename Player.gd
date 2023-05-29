@@ -18,8 +18,9 @@ var armor
 var invincible
 
 var fire_shield = null
-var fire_shield_counter = 0
-var fire_shield_cooldown_counter = 0
+var fire_shield_counter
+var fire_shield_cooldown_counter
+var attack_cooldown_counter
 
 var type = "p"
 
@@ -50,6 +51,7 @@ func _init():
     
     fire_shield_counter = 0
     fire_shield_cooldown_counter = 0
+    attack_cooldown_counter = 0
     
     update_stats(soul)
 
@@ -125,13 +127,18 @@ func get_basic_projectile_texture(soul):
     return basic_projectiles["{0}_{1}_{2}_{3}".format([soul_sorted[0], soul_sorted[1], soul_sorted[2], soul_sorted[3]])]
 
 func attack():
-    var projectile = BasicProjectile.instance()
-    projectile.direction = Vector2(direction[0], direction[1])
-    projectile.position = Vector2(position[0], position[1])
-    projectile.speed = [speed[0], speed[1], speed[2], speed[3]]
-    projectile.get_node("Sprite").texture = get_basic_projectile_texture(soul)
-    projectile.soul = soul.duplicate()
-    get_parent().add_child(projectile)
+    if attack_cooldown_counter > 0:
+        pass
+    else:
+        attack_cooldown_counter = 4
+        var projectile = BasicProjectile.instance()
+        projectile.direction = Vector2(direction[0], direction[1])
+        var radius = projectile.get_node("CollisionShape2D").shape.radius
+        projectile.position = Vector2(position[0], position[1]) + 10 * radius * projectile.direction
+        projectile.speed = [speed[0], speed[1], speed[2], speed[3]]
+        projectile.get_node("Sprite").texture = get_basic_projectile_texture(soul)
+        projectile.soul = soul.duplicate()
+        get_parent().add_child(projectile)
 
 func burn(damage):
     var animated_sprite = get_node("AnimatedSprite")
@@ -270,9 +277,16 @@ func _on_Timer_timeout():
         fire_shield_counter -= 1
     else:
         disable_fire_shield()
+        
+    if fire_shield_cooldown_counter > 0:
+        fire_shield_cooldown_counter -= 1
+    
+    if attack_cooldown_counter > 0:
+        attack_cooldown_counter -= 1
 
 func _on_AnimatedSprite_animation_finished():
     var animated_sprite = get_node("AnimatedSprite")
     if animated_sprite.animation != "default":
+        print("um")
         animated_sprite.animation = "default"
         animated_sprite.play()

@@ -11,7 +11,7 @@ var spin_speed
 
 enum {START_MOVE_TO_PLAYER,  STOP_MOVE_TO_PLAYER, ATTACK_PLAYER, START_SPINNING, STOP_SPINNING}
 
-const projectile_texture = preload("res://basic_projectile.png")
+const projectile_texture = preload("res://ice_spikes.png")
 const BasicProjectile = preload("res://BasicProjectile.tscn")
 
 func _init():
@@ -214,9 +214,8 @@ func _on_Yuki_area_entered(area):
                 
         elif area.type == "p":
             # ensnare slow player
-            area.speed = [0, 0, 0, 0]
-            area.direction = Vector2.ZERO
-            area.drag = 40
+            if ! area.invincible:
+                area.die()
 
 func _on_Yuki_area_exited(area):
     if "drag" in area:
@@ -232,12 +231,13 @@ func attack_player(player):
     var target_pos = Vector2(pos[0], pos[1])
     var proj = BasicProjectile.instance()
     proj.direction = position.direction_to(target_pos)
-    var shape = get_node("CollisionShape2D").shape
-    var radius = shape.radius
-    proj.position = position + 1.5 * radius * proj.direction
+    var ice_spikes_radius = 24
+    proj.position = position + 2.5 * ice_spikes_radius * proj.direction
     proj.speed = [0, 0, 0, 0]
     proj.base_speed = base_projectile_speed
     proj.soul = [2, 2, 2, 2]
+    proj.base_damage = INF
+    proj.get_node("CollisionShape2D").shape.radius = ice_spikes_radius
     proj.get_node("Sprite").texture = projectile_texture
     get_parent().add_child(proj)
     

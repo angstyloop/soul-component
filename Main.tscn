@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=2]
+[gd_scene load_steps=48 format=2]
 
 [ext_resource path="res://burn_3.png" type="Texture" id=1]
 [ext_resource path="res://Player.gd" type="Script" id=2]
@@ -39,6 +39,7 @@
 [ext_resource path="res://yuki_heal_6.png" type="Texture" id=37]
 [ext_resource path="res://health.png" type="Texture" id=38]
 [ext_resource path="res://Health.gd" type="Script" id=39]
+[ext_resource path="res://IceSpikes.tscn" type="PackedScene" id=40]
 
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 450, 450 )
@@ -101,7 +102,7 @@ position = Vector2( 0, 1 )
 [node name="Area2D" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2( 450, 449 )
+position = Vector2( 450, 450 )
 shape = SubResource( 3 )
 
 [node name="Player" type="Area2D" parent="Area2D"]
@@ -118,6 +119,7 @@ shape = SubResource( 1 )
 
 [node name="Soul" type="Area2D" parent="Area2D"]
 position = Vector2( 32, 32 )
+z_index = 1
 script = ExtResource( 4 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D/Soul"]
@@ -136,7 +138,7 @@ shape = SubResource( 5 )
 position = Vector2( 2, -5 )
 frames = SubResource( 7 )
 animation = "heal"
-frame = 5
+frame = 3
 playing = true
 
 [node name="Timer" type="Timer" parent="Area2D"]
@@ -151,6 +153,7 @@ script = ExtResource( 10 )
 
 [node name="Health" type="Area2D" parent="Area2D"]
 position = Vector2( 873, 24 )
+z_index = 1
 script = ExtResource( 39 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D/Health"]
@@ -159,6 +162,285 @@ disabled = true
 
 [node name="Sprite" type="Sprite" parent="Area2D/Health"]
 texture = ExtResource( 38 )
+
+[node name="IceSpikes" parent="Area2D" instance=ExtResource( 40 )]
+
+[node name="IceSpikes47" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 44, 5 )
+rotation = 2.8414
+
+[node name="IceSpikes5" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 0, 163 )
+
+[node name="IceSpikes7" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 0, 245 )
+
+[node name="IceSpikes9" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 0, 325 )
+
+[node name="IceSpikes11" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( -1, 405 )
+
+[node name="IceSpikes13" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( -2, 482 )
+
+[node name="IceSpikes15" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( -1, 562 )
+
+[node name="IceSpikes17" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( -1, 643 )
+
+[node name="IceSpikes19" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( -1, 726 )
+
+[node name="IceSpikes21" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( -1, 808 )
+
+[node name="IceSpikes23" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 0, 889 )
+
+[node name="IceSpikes6" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 6, 205 )
+rotation = -2.8414
+
+[node name="IceSpikes8" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 6, 285 )
+rotation = -2.8414
+
+[node name="IceSpikes10" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 7, 366 )
+rotation = -2.8414
+
+[node name="IceSpikes12" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 6, 445 )
+rotation = -2.8414
+
+[node name="IceSpikes14" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 5, 523 )
+rotation = -2.8414
+
+[node name="IceSpikes16" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 5, 604 )
+rotation = -2.8414
+
+[node name="IceSpikes18" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 5, 686 )
+rotation = -2.8414
+
+[node name="IceSpikes20" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 5, 768 )
+rotation = -2.8414
+
+[node name="IceSpikes22" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 6, 849 )
+rotation = -2.8414
+
+[node name="IceSpikes4" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 5, 123 )
+rotation = -2.8414
+
+[node name="IceSpikes3" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 0, 83 )
+
+[node name="IceSpikes2" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 5, 42 )
+rotation = -2.8414
+
+[node name="IceSpikes24" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 900, -1 )
+
+[node name="IceSpikes25" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 900, 162 )
+
+[node name="IceSpikes26" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 900, 244 )
+
+[node name="IceSpikes27" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 900, 324 )
+
+[node name="IceSpikes28" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 899, 404 )
+
+[node name="IceSpikes29" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 898, 481 )
+
+[node name="IceSpikes30" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 899, 561 )
+
+[node name="IceSpikes31" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 899, 642 )
+
+[node name="IceSpikes32" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 899, 725 )
+
+[node name="IceSpikes33" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 899, 807 )
+
+[node name="IceSpikes34" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 900, 888 )
+
+[node name="IceSpikes35" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 906, 204 )
+rotation = -2.8414
+
+[node name="IceSpikes36" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 906, 284 )
+rotation = -2.8414
+
+[node name="IceSpikes37" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 907, 365 )
+rotation = -2.8414
+
+[node name="IceSpikes38" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 906, 444 )
+rotation = -2.8414
+
+[node name="IceSpikes39" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 905, 522 )
+rotation = -2.8414
+
+[node name="IceSpikes40" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 905, 603 )
+rotation = -2.8414
+
+[node name="IceSpikes41" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 905, 685 )
+rotation = -2.8414
+
+[node name="IceSpikes42" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 905, 767 )
+rotation = -2.8414
+
+[node name="IceSpikes43" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 906, 848 )
+rotation = -2.8414
+
+[node name="IceSpikes44" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 905, 122 )
+rotation = -2.8414
+
+[node name="IceSpikes45" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 900, 82 )
+
+[node name="IceSpikes46" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 905, 41 )
+rotation = -2.8414
+
+[node name="IceSpikes48" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 98, 0 )
+
+[node name="IceSpikes49" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 142, 5 )
+rotation = 2.8414
+
+[node name="IceSpikes50" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 196, 0 )
+
+[node name="IceSpikes51" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 240, 5 )
+rotation = 2.8414
+
+[node name="IceSpikes52" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 294, 0 )
+
+[node name="IceSpikes53" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 338, 5 )
+rotation = 2.8414
+
+[node name="IceSpikes54" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 392, 0 )
+
+[node name="IceSpikes55" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 436, 5 )
+rotation = 2.8414
+
+[node name="IceSpikes56" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 490, 0 )
+
+[node name="IceSpikes57" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 534, 5 )
+rotation = 2.8414
+
+[node name="IceSpikes58" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 589, 0 )
+
+[node name="IceSpikes59" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 636, 5 )
+rotation = 2.8414
+
+[node name="IceSpikes60" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 692, 0 )
+
+[node name="IceSpikes63" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 796, 0 )
+
+[node name="IceSpikes61" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 739, 5 )
+rotation = 2.8414
+
+[node name="IceSpikes64" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 842, 5 )
+rotation = 2.8414
+
+[node name="IceSpikes62" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 48, 903 )
+rotation = 2.8414
+
+[node name="IceSpikes65" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 102, 898 )
+
+[node name="IceSpikes66" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 146, 903 )
+rotation = 2.8414
+
+[node name="IceSpikes67" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 200, 898 )
+
+[node name="IceSpikes68" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 244, 903 )
+rotation = 2.8414
+
+[node name="IceSpikes69" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 298, 898 )
+
+[node name="IceSpikes70" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 342, 903 )
+rotation = 2.8414
+
+[node name="IceSpikes71" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 396, 898 )
+
+[node name="IceSpikes72" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 440, 903 )
+rotation = 2.8414
+
+[node name="IceSpikes73" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 494, 898 )
+
+[node name="IceSpikes74" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 538, 903 )
+rotation = 2.8414
+
+[node name="IceSpikes75" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 593, 898 )
+
+[node name="IceSpikes76" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 640, 903 )
+rotation = 2.8414
+
+[node name="IceSpikes77" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 696, 898 )
+
+[node name="IceSpikes78" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 800, 898 )
+
+[node name="IceSpikes79" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 743, 903 )
+rotation = 2.8414
+
+[node name="IceSpikes80" parent="Area2D" instance=ExtResource( 40 )]
+position = Vector2( 846, 903 )
+rotation = 2.8414
 
 [connection signal="area_entered" from="Area2D/Player" to="Area2D/Player" method="_on_Player_area_entered"]
 [connection signal="player_hit" from="Area2D/Player" to="Area2D/Health" method="_on_Player_player_hit"]

@@ -326,11 +326,14 @@ func take_damage(hit_base_damage, hit_soul):
     print("health remaining: %s" % health)
     
     if health <= 0:
-        queue_free()
-        game_over()
+        die()
 
-func game_over():
+func die():
+    if health > 0:
+        health = 0
+        emit_signal("player_hit", 0, 1, max_health)
     print("game over")
+    queue_free()
 
 func _on_Player_area_entered(area):
     if "type" in area:

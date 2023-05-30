@@ -145,7 +145,7 @@ func _init():
     ]
 
 func start_spinning():
-    spin_speed = 8
+    spin_speed = 3
 
 func stop_spinning():
     spin_speed = 0
@@ -185,6 +185,9 @@ func take_damage(soul):
 
 var air_shield_threshold_speed = 480
 
+func dodge():
+    get_node("AnimatedSprite").play("dodge")
+
 func _on_Trap_area_entered(area):
     if "type" in area:
         if area.type == "b":
@@ -195,9 +198,13 @@ func _on_Trap_area_entered(area):
                 area.queue_free()
             else:
                 # freeze slow projectile
-                area.speed = [0, 0, 0, 0]
-                area.angular_speed = 0
-                area.direction = Vector2.ZERO
+                #area.speed = [0, 0, 0, 0]
+                #area.angular_speed = 0
+                #area.direction = Vector2.ZERO
+                
+                # dodge slow projectile
+                dodge()
+                
         elif area.type == "p":
             # ensnare slow player
             area.speed = [0, 0, 0, 0]
@@ -210,6 +217,8 @@ func _on_Trap_area_exited(area):
 
 func attack_player(player):
     if ! player:
+        if spin_speed == 0:
+            start_spinning()
         return
     var pos = player.position
     var target_pos = Vector2(pos[0], pos[1])
@@ -226,6 +235,8 @@ func attack_player(player):
     
 func start_move_to_player(player):
     if ! player:
+        if spin_speed == 0:
+            start_spinning()
         return
     speed = 200
     direction = position.direction_to(player.position)
@@ -239,6 +250,12 @@ func _on_Timer_timeout():
     
     do_actions(player)
         
+func _on_AnimatedSprite_animation_finished():
+    var animated_sprite = get_node("AnimatedSprite")
+    if animated_sprite.animation != "default":
+        animated_sprite.animation = "default"
+        animated_sprite.play("default")
+
 func _process(delta):
     if speed > 0.000001 and direction.length() > 0.000001:
         position += speed * direction * delta

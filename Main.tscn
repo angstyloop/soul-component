@@ -55,7 +55,7 @@ animations = [ {
 radius = 26.0192
 
 [sub_resource type="RectangleShape2D" id=3]
-extents = Vector2( 449, 451 )
+extents = Vector2( 450, 450 )
 
 [sub_resource type="RectangleShape2D" id=4]
 extents = Vector2( 101.75, 26 )
@@ -92,37 +92,36 @@ animations = [ {
 } ]
 
 [node name="Main" type="Node2D"]
-position = Vector2( 522, 308 )
+position = Vector2( 0, 1 )
 
 [node name="Area2D" type="Area2D" parent="."]
 
 [node name="Player" type="Area2D" parent="Area2D"]
-position = Vector2( -254, -3 )
+position = Vector2( 327, 367 )
 script = ExtResource( 2 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="Area2D/Player"]
 position = Vector2( -1, -1 )
 frames = SubResource( 6 )
 
-[node name="PlayerShape" type="CollisionShape2D" parent="Area2D/Player"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D/Player"]
 position = Vector2( -1, 0 )
 shape = SubResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-visible = false
-position = Vector2( -71, 143 )
+position = Vector2( 0, -1 )
 shape = SubResource( 3 )
 
 [node name="Soul" type="Area2D" parent="Area2D"]
+position = Vector2( 32, 32 )
 script = ExtResource( 4 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D/Soul"]
-position = Vector2( -417, -281 )
 shape = SubResource( 4 )
 disabled = true
 
 [node name="Yuki" type="Area2D" parent="Area2D"]
-position = Vector2( 235, 1 )
+position = Vector2( 592, 382 )
 script = ExtResource( 5 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D/Yuki"]
@@ -131,7 +130,6 @@ shape = SubResource( 5 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="Area2D/Yuki"]
 position = Vector2( 2, -5 )
-scale = Vector2( 2, 2 )
 frames = SubResource( 7 )
 animation = "heal"
 frame = 7
@@ -143,6 +141,7 @@ wait_time = 0.136
 autostart = true
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="Area2D"]
+position = Vector2( 1, 0 )
 stream = ExtResource( 9 )
 script = ExtResource( 10 )
 

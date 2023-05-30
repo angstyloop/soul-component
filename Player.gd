@@ -13,6 +13,12 @@ var acceleration_growth
 var drag
 var stopping_speed
 
+var last_delta
+var top_boundary_position
+var right_boundary_position
+var bottom_boundary_position
+var left_boundary_position
+
 var health
 var armor
 var invincible
@@ -52,6 +58,12 @@ func _init():
     fire_shield_counter = 0
     fire_shield_cooldown_counter = 0
     attack_cooldown_counter = 0
+    
+    last_delta = 100
+    top_boundary_position = 0
+    right_boundary_position = 450 * 2
+    bottom_boundary_position = 450 * 2
+    left_boundary_position = 0
     
     update_stats(soul)
 
@@ -104,8 +116,9 @@ func soul_push_back(soul_index):
     soul[len_soul - 1] = soul_index
     emit_signal("soul_switch", soul)
     update_stats(soul)  
-        
+       
 func move(direction_index, delta):
+    print(position)
     if speed[direction_index] == 0:
         speed[direction_index] = initial_speed
     
@@ -231,6 +244,56 @@ func _process(delta):
 
     if Input.is_action_just_pressed("ui_accept"):
         attack()
+    
+    if position.x <= left_boundary_position + get_node("CollisionShape2D").shape.radius:
+        # reverse
+        position.x = left_boundary_position + get_node("CollisionShape2D").shape.radius
+        if rotation < 180:
+            rotation += 180
+        else:
+            rotation -= 180
+        var t = speed[1]
+        speed[1] = speed[3]
+        speed[3] = t
+        direction.x = -direction.x
+    
+    elif position.x >= right_boundary_position - get_node("CollisionShape2D").shape.radius:
+        # reverse
+        position.x = right_boundary_position - get_node("CollisionShape2D").shape.radius
+        if rotation < 180:
+            rotation += 180
+        else:
+            rotation -= 180
+        var t = speed[1]
+        speed[1] = speed[3]
+        speed[3] = t
+        direction.x = -direction.x
+        
+    if position.y <= top_boundary_position + get_node("CollisionShape2D").shape.radius:
+        # reverse
+        position.y = top_boundary_position + get_node("CollisionShape2D").shape.radius
+        if rotation < 180:
+            rotation += 180
+        else:
+            rotation -= 180
+        var t = speed[0]
+        speed[0] = speed[2]
+        speed[2] = t
+        direction.x = -direction.x
+        
+    elif position.y >= bottom_boundary_position - get_node("CollisionShape2D").shape.radius:
+        # reverse
+        position.y = bottom_boundary_position - get_node("CollisionShape2D").shape.radius
+        if rotation < 180:
+            rotation += 180
+        else:
+            rotation -= 180
+        var t = speed[0]
+        speed[0] = speed[2]
+        speed[2] = t
+        direction.x = -direction.x
+    
+    last_delta = delta
         
 func take_damage(hit_base_damage, hit_soul):
     if invincible:

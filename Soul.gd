@@ -11,7 +11,7 @@ func _init():
     var offset = 0
     for i in 4:
         var node = default_scene.instance()
-        var shape = node.get_node("SoulShape").shape
+        var shape = node.get_node("CollisionShape2D").shape
         var sprite_width = shape.extents.x
         node.position[0] += offset
         offset += sprite_width
@@ -30,7 +30,7 @@ func _on_Player_soul_switch(soul):
         remove_all_children(self)
         for i in soul:
             var node = soul_scenes[i].instance()
-            var shape = node.get_node("SoulShape").shape
+            var shape = node.get_node("CollisionShape2D").shape
             var sprite_width = shape.extents.x
             node.position[0] += offset
             offset += sprite_width

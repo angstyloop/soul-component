@@ -4,10 +4,12 @@ var damage_key
 var health
 var speed
 var direction
-var start_move_to_player_count
-var stop_move_to_player_count
 var base_projectile_speed
-var attack_player_count
+var beat_counter
+var beat_array
+var spin_speed
+
+enum {START_MOVE_TO_PLAYER,  STOP_MOVE_TO_PLAYER, ATTACK_PLAYER, START_SPINNING, STOP_SPINNING}
 
 const projectile_texture = preload("res://basic_projectile.png")
 const BasicProjectile = preload("res://BasicProjectile.tscn")
@@ -19,12 +21,157 @@ func _init():
     damage_key = [-1, 1, -1, -1]
     health = 10
     speed = 0
+    spin_speed = 0
     direction = Vector2.ZERO
-    start_move_to_player_count = 0
-    stop_move_to_player_count = 0
-    attack_player_count = 2
-    base_projectile_speed = 4
-    
+    base_projectile_speed = 10
+    beat_counter = 0
+    beat_array = [
+        [START_MOVE_TO_PLAYER], [], [], [],
+        [STOP_MOVE_TO_PLAYER], [], [], [],
+        [START_MOVE_TO_PLAYER], [], [], [],
+        [STOP_MOVE_TO_PLAYER], [], [], [],
+        
+        [START_MOVE_TO_PLAYER], [], [], [],
+        [STOP_MOVE_TO_PLAYER], [], [], [],
+        [START_MOVE_TO_PLAYER], [], [], [],
+        [STOP_MOVE_TO_PLAYER], [], [], [],
+        
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
+        
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
+        
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
+        
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
+        
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
+        
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
+        
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
+        
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
+        
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
+        
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
+        
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
+        
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
+        
+        #
+        
+        [ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER],
+        [ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER],
+        [ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER],
+        [ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER],
+        
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
+        
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
+        
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
+  
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
+        
+        [START_SPINNING], [], [], [],
+        [], [], [], [],
+        [], [], [], [],
+        [], [], [], [STOP_SPINNING],
+    ]
+
+func start_spinning():
+    spin_speed = 8
+
+func stop_spinning():
+    spin_speed = 0
+    rotation = 0
+
+func do_actions(player):
+    print(beat_counter)
+    for action in beat_array[beat_counter]:
+        if (action == START_MOVE_TO_PLAYER):
+            start_move_to_player(player)
+        elif (action == STOP_MOVE_TO_PLAYER):
+            stop_move_to_player(player)
+        elif (action == ATTACK_PLAYER):
+            attack_player(player)
+        elif (action == START_SPINNING):
+            start_spinning()
+        elif (action == STOP_SPINNING):
+            stop_spinning()
+    if (beat_counter == 367):
+        beat_counter = 0
+        var audio = get_parent().get_node("AudioStreamPlayer2D")
+        audio.stop()
+        audio.play(0)
+    else:
+        beat_counter += 1
+  
 func take_damage(soul):
     var damage = 0
     for i in 4:
@@ -55,7 +202,6 @@ func _on_Trap_area_exited(area):
 func attack_player(player):
     if ! player:
         return
-    attack_player_count = 3
     var pos = player.position
     var target_pos = Vector2(pos[0], pos[1])
     var proj = BasicProjectile.instance()
@@ -72,50 +218,21 @@ func attack_player(player):
 func start_move_to_player(player):
     if ! player:
         return
-    # cooldown of move action
-    start_move_to_player_count = 3
-    # duration of movement
-    stop_move_to_player_count = 1
-    speed = 100
+    speed = 200
     direction = position.direction_to(player.position)
 
-func stop_move_to_player():
+func stop_move_to_player(_player):
     speed = 0
     direction = Vector2.ZERO
 
-var ticktock = "tock"
-var ticktock_count = 3
-
 func _on_Timer_timeout():
-    if ticktock_count < 3:
-        ticktock_count += 1
-    else:
-        if (ticktock == "tock"):
-            ticktock = "tick"
-        else:
-            ticktock = "tock"
-        print(ticktock)
-        print("\n")
-        ticktock_count = 0
-    
     var player = get_parent().get_node("Player")
     
-    if stop_move_to_player_count == 0:
-        stop_move_to_player()
-    else:
-        stop_move_to_player_count -= 1
-
-    if start_move_to_player_count == 0:
-        start_move_to_player(player)
-    else:
-       start_move_to_player_count -= 1
-    
-    if attack_player_count == 0:
-        attack_player(player)
-    else:
-        attack_player_count -= 1
-    
+    do_actions(player)
         
 func _process(delta):
     if speed > 0.000001 and direction.length() > 0.000001:
         position += speed * direction * delta
+    
+    if spin_speed > 0.000001:
+        rotation += fmod((spin_speed * delta), 360)

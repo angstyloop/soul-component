@@ -149,8 +149,8 @@ func use_fire_shield():
     if fire_shield_cooldown_counter > 0:
         burn(1)
     else:
-        fire_shield_cooldown_counter = 20
-        fire_shield_counter = 10
+        fire_shield_cooldown_counter = 50
+        fire_shield_counter = 30
         invincible = true
         fire_shield = FireShield.instance()
         add_child(fire_shield)

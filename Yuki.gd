@@ -188,7 +188,7 @@ var air_shield_threshold_speed = 480
 func dodge():
     get_node("AnimatedSprite").play("dodge")
 
-func _on_Trap_area_entered(area):
+func _on_Yuki_area_entered(area):
     if "type" in area:
         if area.type == "b":
             var proj_speed = (area.base_speed * area.direction + Vector2.UP * area.speed[0] + Vector2.RIGHT * area.speed[1] + Vector2.DOWN * area.speed[2] + Vector2.LEFT * area.speed[3]).length()
@@ -211,7 +211,7 @@ func _on_Trap_area_entered(area):
             area.direction = Vector2.ZERO
             area.drag = 40
 
-func _on_Trap_area_exited(area):
+func _on_Yuki_area_exited(area):
     if "drag" in area:
         area.drag = 10
 
@@ -220,6 +220,7 @@ func attack_player(player):
         if spin_speed == 0:
             start_spinning()
         return
+    get_node("AnimatedSprite").play("attack")
     var pos = player.position
     var target_pos = Vector2(pos[0], pos[1])
     var proj = BasicProjectile.instance()

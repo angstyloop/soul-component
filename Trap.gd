@@ -183,17 +183,26 @@ func take_damage(soul):
     if health <= 0:
         queue_free()
 
+var air_shield_threshold_speed = 480
+
 func _on_Trap_area_entered(area):
-    if "speed" in area:
-        area.speed = [0, 0, 0, 0]
-    if "direction" in area:
-        area.direction = Vector2.ZERO
-    if "drag" in area:
-        area.drag = 40
     if "type" in area:
         if area.type == "b":
-            take_damage(area.soul)
-            area.queue_free()
+            var proj_speed = (area.base_speed * area.direction + Vector2.UP * area.speed[0] + Vector2.RIGHT * area.speed[1] + Vector2.DOWN * area.speed[2] + Vector2.LEFT * area.speed[3]).length()
+            if proj_speed  > air_shield_threshold_speed:
+                # hit by fast projectile
+                take_damage(area.soul)
+                area.queue_free()
+            else:
+                # freeze slow projectile
+                area.speed = [0, 0, 0, 0]
+                area.angular_speed = 0
+                area.direction = Vector2.ZERO
+        elif area.type == "p":
+            # ensnare slow player
+            area.speed = [0, 0, 0, 0]
+            area.direction = Vector2.ZERO
+            area.drag = 40
 
 func _on_Trap_area_exited(area):
     if "drag" in area:

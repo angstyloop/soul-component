@@ -14,6 +14,15 @@ config/name="soul_component"
 run/main_scene="res://Main.tscn"
 config/icon="res://icon.png"
 
+[display]
+
+window/size/width=900
+window/size/height=900
+
+[global]
+
+display=false
+
 [gui]
 
 common/drop_mouse_on_gui_input_disabled=true

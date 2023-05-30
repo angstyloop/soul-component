@@ -20,6 +20,7 @@ var bottom_boundary_position
 var left_boundary_position
 
 var health
+var max_health
 var armor
 var invincible
 
@@ -41,6 +42,7 @@ const FireShield = preload("res://FireShield.tscn")
 
 signal soul_switch(soul)
 signal player_attack(soul)
+signal player_hit(new_health, damage)
 
 func _init():
     window_size = OS.get_real_window_size()
@@ -51,7 +53,8 @@ func _init():
     
     direction = Vector2.ZERO
     
-    health = 10
+    max_health = 10
+    health = max_health
     
     invincible = false
     
@@ -315,6 +318,8 @@ func take_damage(hit_base_damage, hit_soul):
                     damage += 1
         
     health -= damage
+    
+    emit_signal("player_hit", health, damage, max_health)
     
     print("player hit by projecile soul: {0} {1} {2} {3}".format([hit_soul[0], hit_soul[1], hit_soul[2], hit_soul[3]]))
     print("took damage: %s" % damage)

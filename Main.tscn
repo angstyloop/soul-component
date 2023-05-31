@@ -138,7 +138,6 @@ shape = SubResource( 5 )
 position = Vector2( 2, -5 )
 frames = SubResource( 7 )
 animation = "heal"
-frame = 3
 playing = true
 
 [node name="Timer" type="Timer" parent="Area2D"]

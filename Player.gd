@@ -201,7 +201,21 @@ func _process(delta):
         
     if Input.is_action_just_pressed("ui_end"):
         soul_push_back(3)
-    
+        
+    if !(Input.is_action_pressed("ui_up") or Input.is_action_pressed("ui_right") or Input.is_action_pressed("ui_down") or Input.is_action_pressed("ui_left")):
+        # standing animation
+        var sprite = get_node("AnimatedSprite")
+        # sprite needs to not be rotated, so it is always face up
+        sprite.rotation = 0
+        rotation = 0
+        sprite.play("stand")
+    else:
+        # moving animation
+        var sprite = get_node("AnimatedSprite")
+        # sprite needs to be rotated (initially)
+        sprite.rotation = 90
+        sprite.play("default")
+        
     if Input.is_action_pressed("ui_up") and Input.is_action_pressed("ui_right") and Input.is_action_pressed("ui_down") and Input.is_action_pressed("ui_left"):
         rotation += fmod((spin_speed * delta), 360)
         return

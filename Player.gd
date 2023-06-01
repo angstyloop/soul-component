@@ -549,7 +549,7 @@ func _on_Player_area_entered(area):
 
 func _on_Timer_timeout():
     if ready_to_die:
-        print(die_counter)
+        #print(die_counter)
         if die_counter > 0:
             die_counter -= 1
         else:

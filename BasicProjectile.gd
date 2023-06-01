@@ -24,9 +24,9 @@ func _init():
     
 func _process(delta):
     if !position_fixed:
-        print(base_speed)
-        print(direction)
-        print(speed)
-        print(delta)
+        #print(base_speed)
+        #print(direction)
+        #print(speed)
+        #print(delta)
         position += base_speed * direction + (Vector2.UP * speed[0] + Vector2.RIGHT * speed[1] + Vector2.DOWN * speed[2] + Vector2.LEFT * speed[3]) * delta
     rotation += angular_speed * delta

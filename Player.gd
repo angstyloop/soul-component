@@ -29,6 +29,8 @@ var fire_shield_counter
 var fire_shield_cooldown_counter
 var attack_cooldown_counter
 
+var animation_prefix
+
 var type = "p"
 
 var special = {}
@@ -119,23 +121,74 @@ func soul_push_back(soul_index):
     soul[len_soul - 1] = soul_index
     emit_signal("soul_switch", soul)
     update_stats(soul)  
-       
+
+func stand(_delta):
+    animation_prefix = "stand"
+    
 func move(direction_index, delta):
-    print(position)
-    if speed[direction_index] == 0:
-        speed[direction_index] = initial_speed
+    #print("move")
+    animation_prefix = "walk"
+    if direction_index < 4:
+        #print(direction_index)
+        #print(position)
+        if speed[direction_index] == 0:
+            speed[direction_index] = initial_speed
+        
+        speed[direction_index]  += initial_acceleration * exp(acceleration_growth * delta) * delta
+        
+        if speed[direction_index]  > speed_limit:
+            speed[direction_index]  = speed_limit
+
+        #rotation = -direction.angle_to(directions[2])
+        
+    # diagonals
     
-    speed[direction_index]  += initial_acceleration * exp(acceleration_growth * delta) * delta
-    
-    if speed[direction_index]  > speed_limit:
-        speed[direction_index]  = speed_limit
+    elif direction_index == 4:
+        # left and up
+        if speed[3] == 0 and speed[0] == 0:
+            var t = initial_speed / sqrt(2)
+            speed[3] = t
+            speed[0] = t
+        var t = min(speed_limit, initial_acceleration * exp(acceleration_growth * delta) * delta / sqrt(2))
+        speed[3] += t
+        speed[0] += t
+
+    elif direction_index == 5:
+        # up and right
+        if speed[0] == 0 and speed[1] == 0:
+            var t = initial_speed / sqrt(2)
+            speed[0] = t
+            speed[1] = t
+        var t = min(speed_limit, initial_acceleration * exp(acceleration_growth * delta) * delta / sqrt(2))
+        speed[0] += t
+        speed[1] += t
+
+    elif direction_index == 6:
+        # right and down
+        if speed[1] == 0 and speed[2] == 0:
+            var t = initial_speed / sqrt(2)
+            speed[1] = t
+            speed[2] = t
+        var t = min(speed_limit, initial_acceleration * exp(acceleration_growth * delta) * delta / sqrt(2))
+        speed[1] += t
+        speed[2] += t
+        
+    elif direction_index == 7:
+        # down and left
+        if speed[2] == 0 and speed[3] == 0:
+            var t = initial_speed / sqrt(2)
+            speed[2] = t
+            speed[3] = t
+        var t = min(speed_limit, initial_acceleration * exp(acceleration_growth * delta) * delta / sqrt(2))
+        speed[2] += t
+        speed[3] += t
     
     var v = Vector2.UP * speed[0] + Vector2.RIGHT * speed[1] + Vector2.DOWN * speed[2] + Vector2.LEFT * speed[3]
     
     if v.length() > 0.0001:
         direction = v / v.length()
 
-    rotation = -direction.angle_to(directions[2])
+    #print(direction)
 
 func get_basic_projectile_texture(soul):
     var soul_sorted = [soul[0], soul[1], soul[2], soul[3]]
@@ -174,7 +227,7 @@ func use_fire_shield():
 func disable_fire_shield():
     invincible = false
     if fire_shield != null:
-        print("removing fire shield")
+        #print("removing fire shield")
         remove_child(fire_shield)
     fire_shield = null
     fire_shield_counter = 0
@@ -201,49 +254,55 @@ func _process(delta):
         
     if Input.is_action_just_pressed("ui_end"):
         soul_push_back(3)
-        
+      
+    # long chain of exclusive combinations of arrow key inputs, used to control direction of animation, speed of movement, and direction of movement
     if !(Input.is_action_pressed("ui_up") or Input.is_action_pressed("ui_right") or Input.is_action_pressed("ui_down") or Input.is_action_pressed("ui_left")):
         # standing animation
         var sprite = get_node("AnimatedSprite")
         # sprite needs to not be rotated, so it is always face up
         sprite.rotation = 0
         rotation = 0
-        sprite.play("stand")
-    else:
-        # moving animation
-        var sprite = get_node("AnimatedSprite")
-        # sprite needs to be rotated (initially)
-        sprite.rotation = 90
-        sprite.play("default")
+        #print("stand")
+        stand(delta)
         
-    if Input.is_action_pressed("ui_up") and Input.is_action_pressed("ui_right") and Input.is_action_pressed("ui_down") and Input.is_action_pressed("ui_left"):
-        rotation += fmod((spin_speed * delta), 360)
-        return
+    elif Input.is_action_pressed("ui_up") and Input.is_action_pressed("ui_right") and Input.is_action_pressed("ui_down") and Input.is_action_pressed("ui_left"):
+        pass
     
     elif Input.is_action_pressed("ui_up") and Input.is_action_pressed("ui_right") and Input.is_action_pressed("ui_down"):
         move(1, delta)
     
     elif Input.is_action_pressed("ui_right") and Input.is_action_pressed("ui_down") and Input.is_action_pressed("ui_left"):
         move(2, delta)
-        
+       
     elif Input.is_action_pressed("ui_down") and Input.is_action_pressed("ui_left") and Input.is_action_pressed("ui_up"):
         move(3, delta)
     
     elif Input.is_action_pressed("ui_left") and Input.is_action_pressed("ui_up") and Input.is_action_pressed("ui_right"):
         move(0, delta)
     
-    else:        
-        if Input.is_action_pressed("ui_up"):
-            move(0, delta)
+    elif Input.is_action_pressed("ui_left") and Input.is_action_pressed("ui_up"):
+        move(4, delta)
         
-        if Input.is_action_pressed("ui_right"):
-            move(1, delta)
+    elif Input.is_action_pressed("ui_right") and Input.is_action_pressed("ui_up"):
+        move(5, delta)
         
-        if Input.is_action_pressed("ui_down"):
-            move(2, delta)
-
-        if Input.is_action_pressed("ui_left"):
-            move(3, delta)
+    elif Input.is_action_pressed("ui_right") and Input.is_action_pressed("ui_down"):
+        move(6, delta)
+        
+    elif Input.is_action_pressed("ui_left") and Input.is_action_pressed("ui_down"):
+        move(7, delta)
+    
+    elif Input.is_action_pressed("ui_up"):
+        move(0, delta)
+        
+    elif Input.is_action_pressed("ui_right"):
+        move(1, delta)
+        
+    elif Input.is_action_pressed("ui_down"):
+        move(2, delta)
+        
+    elif Input.is_action_pressed("ui_left"):
+        move(3, delta)
     
     for i in len(speed):
         if speed[i] <= 0:
@@ -265,10 +324,10 @@ func _process(delta):
     if position.x <= left_boundary_position + get_node("CollisionShape2D").shape.radius:
         # reverse
         position.x = left_boundary_position + get_node("CollisionShape2D").shape.radius
-        if rotation < 180:
-            rotation += 180
-        else:
-            rotation -= 180
+        #if rotation < 180:
+        #    rotation += 180
+        #else:
+        #    rotation -= 180
         var t = speed[1]
         speed[1] = speed[3]
         speed[3] = t
@@ -277,10 +336,10 @@ func _process(delta):
     elif position.x >= right_boundary_position - get_node("CollisionShape2D").shape.radius:
         # reverse
         position.x = right_boundary_position - get_node("CollisionShape2D").shape.radius
-        if rotation < 180:
-            rotation += 180
-        else:
-            rotation -= 180
+        #if rotation < 180:
+        #    rotation += 180
+        #else:
+        #    rotation -= 180
         var t = speed[1]
         speed[1] = speed[3]
         speed[3] = t
@@ -289,10 +348,10 @@ func _process(delta):
     if position.y <= top_boundary_position + get_node("CollisionShape2D").shape.radius:
         # reverse
         position.y = top_boundary_position + get_node("CollisionShape2D").shape.radius
-        if rotation < 180:
-            rotation += 180
-        else:
-            rotation -= 180
+        #if rotation < 180:
+        #    rotation += 180
+        #else:
+        #    rotation -= 180
         var t = speed[0]
         speed[0] = speed[2]
         speed[2] = t
@@ -301,15 +360,53 @@ func _process(delta):
     elif position.y >= bottom_boundary_position - get_node("CollisionShape2D").shape.radius:
         # reverse
         position.y = bottom_boundary_position - get_node("CollisionShape2D").shape.radius
-        if rotation < 180:
-            rotation += 180
-        else:
-            rotation -= 180
+        #if rotation < 180:
+        #    rotation += 180
+        #else:
+        #    rotation -= 180
         var t = speed[0]
         speed[0] = speed[2]
         speed[2] = t
         direction.x = -direction.x
     
+    # determine the closest cardinal direction, and animate based on that
+    var angle = direction.angle_to(Vector2.RIGHT) * 180/PI # bounded [-180, 180)
+    var sprite = get_node("AnimatedSprite")
+    #print(angle)
+    #print(animation_prefix)
+    if angle >= -22.5 && angle < 22.5:
+        #print("walk_right")
+        sprite.play(animation_prefix + "_right")
+        
+    elif angle >= 22.5 and angle < 67.5:
+        #print("walk_back_right")
+        sprite.play(animation_prefix + "_back_right")
+        
+    elif angle >= 67.5 and angle < 112.5:
+        #print("walk_back")
+        sprite.play(animation_prefix + "_back")
+        
+    elif angle >= 112.5 and angle < 157.5:
+        #print("walk_back_left")
+        sprite.play(animation_prefix + "_back_left")
+        
+    elif angle >= 157.5 || angle < -157.5:
+        #print("walk_left")
+        sprite.play(animation_prefix + "_left")
+        
+    elif angle >= -157.5 and angle < -112.5:
+        #print("walk_front_left")
+        sprite.play(animation_prefix + "_front_left")
+        
+    elif angle >= -112.5 and angle < -67.5:
+        #print("walk_front")
+        sprite.play(animation_prefix + "_front")
+        
+    elif angle >= -157.5 and angle < -22.5:
+        #print("walk_front_right")
+        sprite.play(animation_prefix + "_front_right")
+    
+    # hang onto the previous delta in case we need to use it to calculate stuff
     last_delta = delta
         
 func take_damage(hit_base_damage, hit_soul):
@@ -335,9 +432,9 @@ func take_damage(hit_base_damage, hit_soul):
     
     emit_signal("player_hit", health, damage, max_health)
     
-    print("player hit by projecile soul: {0} {1} {2} {3}".format([hit_soul[0], hit_soul[1], hit_soul[2], hit_soul[3]]))
-    print("took damage: %s" % damage)
-    print("health remaining: %s" % health)
+    #print("player hit by projecile soul: {0} {1} {2} {3}".format([hit_soul[0], hit_soul[1], hit_soul[2], hit_soul[3]]))
+    #print("took damage: %s" % damage)
+    #print("health remaining: %s" % health)
     
     if health <= 0:
         die()
@@ -370,8 +467,12 @@ func _on_Timer_timeout():
         attack_cooldown_counter -= 1
 
 func _on_AnimatedSprite_animation_finished():
+    #print("non-looping animation finished")
     var animated_sprite = get_node("AnimatedSprite")
     if animated_sprite.animation != "default":
-        print("um")
         animated_sprite.animation = "default"
         animated_sprite.play()
+
+
+func _on_Player_player_attack(soul):
+    pass # Replace with function body.

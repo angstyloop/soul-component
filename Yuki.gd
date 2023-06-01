@@ -152,7 +152,7 @@ func stop_spinning():
     rotation = 0
 
 func do_actions(player):
-    print(beat_counter)
+    #print(beat_counter)
     for action in beat_array[beat_counter]:
         if (action == START_MOVE_TO_PLAYER):
             start_move_to_player(player)
@@ -190,7 +190,7 @@ func take_damage(soul):
     if health <= 0:
         queue_free()
 
-var air_shield_threshold_speed = 480
+var air_shield_threshold_speed = 300
 
 func dodge():
     get_node("AnimatedSprite").play("dodge")
@@ -246,7 +246,7 @@ func start_move_to_player(player):
         if spin_speed == 0:
             start_spinning()
         return
-    speed = 200
+    speed = 300
     direction = position.direction_to(player.position)
 
 func stop_move_to_player(_player):

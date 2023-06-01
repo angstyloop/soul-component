@@ -124,6 +124,7 @@ func soul_push_back(soul_index):
     soul[len_soul - 1] = soul_index
     emit_signal("soul_switch", soul)
     update_stats(soul)  
+    get_node("BasicProjectile/Sprite").texture = get_basic_projectile_texture(soul)
 
 func stand(_delta):
     animation_prefix = "stand"

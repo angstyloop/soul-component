@@ -345,7 +345,7 @@ position = Vector2( -1, -1 )
 rotation = 1.5708
 frames = SubResource( 6 )
 animation = "cloud_front_right"
-frame = 11
+frame = 2
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]

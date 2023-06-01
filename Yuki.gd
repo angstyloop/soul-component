@@ -23,7 +23,7 @@ func _init():
     speed = 0
     spin_speed = 0
     direction = Vector2.ZERO
-    base_projectile_speed = 20
+    base_projectile_speed = 50
     beat_counter = 0
     beat_array = [
         [START_MOVE_TO_PLAYER], [], [], [],

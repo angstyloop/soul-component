@@ -1,5 +1,6 @@
 extends Area2D
 
+var first_run
 var window_size
 var speed
 var spin_speed
@@ -47,6 +48,8 @@ signal player_attack(soul)
 signal player_hit(new_health, damage)
 
 func _init():
+    first_run = true
+    
     window_size = OS.get_real_window_size()
     #position = Vector2(window_size[0] / 2, window_size[1] / 2)
     
@@ -137,8 +140,6 @@ func move(direction_index, delta):
         
         if speed[direction_index]  > speed_limit:
             speed[direction_index]  = speed_limit
-
-        #rotation = -direction.angle_to(directions[2])
     
     elif direction_index == 4:
         # left and up
@@ -192,6 +193,16 @@ func move(direction_index, delta):
     else:
         animation_prefix = "walk"
         rotation = 0
+        
+    var children = get_children()
+    var irla = get_node("BasicProjectile")
+    if irla:
+        irla.speed = [0, 0, 0, 0]
+        irla.base_speed = 0
+        irla.position_fixed = true
+        irla.get_node("CollisionShape2D").disabled = true
+        irla.position = direction * 2 * get_node("CollisionShape2D").shape.radius
+        irla.get_node("Sprite").texture = get_basic_projectile_texture(soul)
 
     #print(direction)
 
@@ -205,14 +216,31 @@ func attack():
         pass
     else:
         attack_cooldown_counter = 4
-        var projectile = BasicProjectile.instance()
-        projectile.direction = Vector2(direction[0], direction[1])
-        var radius = projectile.get_node("CollisionShape2D").shape.radius
-        projectile.position = Vector2(position[0], position[1]) + 10 * radius * projectile.direction
-        projectile.speed = [speed[0], speed[1], speed[2], speed[3]]
-        projectile.get_node("Sprite").texture = get_basic_projectile_texture(soul)
-        projectile.soul = soul.duplicate()
-        get_parent().add_child(projectile)
+        
+        var thrown_irla = get_node("BasicProjectile")
+        thrown_irla.held = false
+        thrown_irla.base_speed = 2
+        thrown_irla.position_fixed = false
+        thrown_irla.direction = direction
+        thrown_irla.get_node("CollisionShape2D").disabled = false
+        var radius = thrown_irla.get_node("CollisionShape2D").shape.radius
+        thrown_irla.position = position + direction * 2 * (radius + get_node("CollisionShape2D").shape.radius)
+        thrown_irla.speed = [speed[0], speed[1], speed[2], speed[3]]
+        thrown_irla.get_node("Sprite").texture = get_basic_projectile_texture(soul)
+        thrown_irla.soul = soul.duplicate()
+        remove_child(thrown_irla)
+        get_parent().add_child(thrown_irla)
+
+        var new_irla = BasicProjectile.instance()
+        new_irla.held = true
+        new_irla.speed = [0, 0, 0, 0]
+        new_irla.base_speed = 0
+        new_irla.position_fixed = true
+        new_irla.get_node("CollisionShape2D").disabled = true
+        new_irla.position = position + direction * 2 * (radius + get_node("CollisionShape2D").shape.radius)
+        new_irla.get_node("Sprite").texture = get_basic_projectile_texture(soul)
+        new_irla.direction = Vector2(direction[0], direction[1])
+        add_child(new_irla)
 
 func burn(damage):
     var animated_sprite = get_node("AnimatedSprite")
@@ -245,6 +273,18 @@ func use_soul_special():
         attack()
 
 func _process(delta):
+    if (first_run):
+        first_run = false
+        var children = get_children()
+        var irla = get_children()[2]
+        irla.held = true
+        irla.speed = [0, 0, 0, 0]
+        irla.base_speed = 0
+        irla.position_fixed = true
+        irla.get_node("CollisionShape2D").disabled = true
+        irla.position = direction * 2 * get_node("CollisionShape2D").shape.radius
+        irla.get_node("Sprite").texture = get_basic_projectile_texture(soul)
+        
     if Input.is_action_just_pressed("ui_cancel"):
         use_soul_special()
     

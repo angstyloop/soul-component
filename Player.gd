@@ -29,6 +29,8 @@ var fire_shield = null
 var fire_shield_counter
 var fire_shield_cooldown_counter
 var attack_cooldown_counter
+var ready_to_die
+var die_counter
 
 var animation_prefix
 
@@ -42,6 +44,7 @@ const base_drag = 4
 const BasicProjectile = preload("res://BasicProjectile.tscn")
 const basic_projectiles = {"0_0_0_0": preload("res://basic_projectile_0_0_0_0.png"), "0_0_0_1": preload("res://basic_projectile_0_0_0_1.png"), "0_0_0_2": preload("res://basic_projectile_0_0_0_2.png"), "0_0_0_3": preload("res://basic_projectile_0_0_0_3.png"), "0_0_1_1": preload("res://basic_projectile_0_0_1_1.png"), "0_0_1_2": preload("res://basic_projectile_0_0_1_2.png"), "0_0_1_3": preload("res://basic_projectile_0_0_1_3.png"), "0_0_2_2": preload("res://basic_projectile_0_0_2_2.png"), "0_0_2_3": preload("res://basic_projectile_0_0_2_3.png"), "0_0_3_3": preload("res://basic_projectile_0_0_3_3.png"), "0_1_1_1": preload("res://basic_projectile_0_1_1_1.png"), "0_1_1_2": preload("res://basic_projectile_0_1_1_2.png"), "0_1_1_3": preload("res://basic_projectile_0_1_1_3.png"), "0_1_2_2": preload("res://basic_projectile_0_1_2_2.png"), "0_1_2_3": preload("res://basic_projectile_0_1_2_3.png"), "0_1_3_3": preload("res://basic_projectile_0_1_3_3.png"), "0_2_2_2": preload("res://basic_projectile_0_2_2_2.png"), "0_2_2_3": preload("res://basic_projectile_0_2_2_3.png"), "0_2_3_3": preload("res://basic_projectile_0_2_3_3.png"), "0_3_3_3": preload("res://basic_projectile_0_3_3_3.png"), "1_1_1_1": preload("res://basic_projectile_1_1_1_1.png"), "1_1_1_2": preload("res://basic_projectile_1_1_1_2.png"), "1_1_1_3": preload("res://basic_projectile_1_1_1_3.png"), "1_1_2_2": preload("res://basic_projectile_1_1_2_2.png"), "1_1_2_3": preload("res://basic_projectile_1_1_2_3.png"), "1_1_3_3": preload("res://basic_projectile_1_1_3_3.png"), "1_2_2_2": preload("res://basic_projectile_1_2_2_2.png"), "1_2_2_3": preload("res://basic_projectile_1_2_2_3.png"), "1_2_3_3": preload("res://basic_projectile_1_2_3_3.png"), "1_3_3_3": preload("res://basic_projectile_1_3_3_3.png"), "2_2_2_2": preload("res://basic_projectile_2_2_2_2.png"), "2_2_2_3": preload("res://basic_projectile_2_2_2_3.png"), "2_2_3_3": preload("res://basic_projectile_2_2_3_3.png"), "2_3_3_3": preload("res://basic_projectile_2_3_3_3.png"), "3_3_3_3": preload("res://basic_projectile_3_3_3_3.png")}
 const FireShield = preload("res://FireShield.tscn")
+const ji_death = preload("res://ji_death.wav")
 
 signal soul_switch(soul)
 signal player_attack(soul)
@@ -66,6 +69,8 @@ func _init():
     fire_shield_counter = 0
     fire_shield_cooldown_counter = 0
     attack_cooldown_counter = 0
+    ready_to_die = false
+    die_counter = 0
     
     last_delta = 100
     top_boundary_position = 0
@@ -252,8 +257,8 @@ func use_fire_shield():
     if fire_shield_cooldown_counter > 0:
         burn(1)
     else:
-        fire_shield_cooldown_counter = 200
-        fire_shield_counter = 200
+        fire_shield_cooldown_counter = 150
+        fire_shield_counter = 150
         invincible = true
         fire_shield = FireShield.instance()
         add_child(fire_shield)
@@ -285,70 +290,71 @@ func _process(delta):
         irla.get_node("CollisionShape2D").disabled = true
         irla.position = direction * 2 * get_node("CollisionShape2D").shape.radius
         irla.get_node("Sprite").texture = get_basic_projectile_texture(soul)
-        
-    if Input.is_action_just_pressed("ui_cancel"):
-        use_soul_special()
     
-    if Input.is_action_just_pressed("ui_home"):
-        soul_push_back(0)
-    
-    if Input.is_action_just_pressed("ui_page_up"):
-        soul_push_back(1)
-    
-    if Input.is_action_just_pressed("ui_page_down"):
-        soul_push_back(2)
+    if !ready_to_die:   
+        if Input.is_action_just_pressed("ui_cancel"):
+            use_soul_special()
         
-    if Input.is_action_just_pressed("ui_end"):
-        soul_push_back(3)
-      
-    # long chain of exclusive combinations of arrow key inputs, used to control direction of animation, speed of movement, and direction of movement
-    if !(Input.is_action_pressed("ui_up") or Input.is_action_pressed("ui_right") or Input.is_action_pressed("ui_down") or Input.is_action_pressed("ui_left")):
-        # standing animation
-        var sprite = get_node("AnimatedSprite")
-        # sprite needs to not be rotated, so it is always face up
-        sprite.rotation = 0
-        rotation = 0
-        #print("stand")
-        stand(delta)
+        if Input.is_action_just_pressed("ui_home"):
+            soul_push_back(0)
         
-    elif Input.is_action_pressed("ui_up") and Input.is_action_pressed("ui_right") and Input.is_action_pressed("ui_down") and Input.is_action_pressed("ui_left"):
-        pass
-    
-    elif Input.is_action_pressed("ui_up") and Input.is_action_pressed("ui_right") and Input.is_action_pressed("ui_down"):
-        move(1, delta)
-    
-    elif Input.is_action_pressed("ui_right") and Input.is_action_pressed("ui_down") and Input.is_action_pressed("ui_left"):
-        move(2, delta)
-       
-    elif Input.is_action_pressed("ui_down") and Input.is_action_pressed("ui_left") and Input.is_action_pressed("ui_up"):
-        move(3, delta)
-    
-    elif Input.is_action_pressed("ui_left") and Input.is_action_pressed("ui_up") and Input.is_action_pressed("ui_right"):
-        move(0, delta)
-    
-    elif Input.is_action_pressed("ui_left") and Input.is_action_pressed("ui_up"):
-        move(4, delta)
+        if Input.is_action_just_pressed("ui_page_up"):
+            soul_push_back(1)
         
-    elif Input.is_action_pressed("ui_right") and Input.is_action_pressed("ui_up"):
-        move(5, delta)
+        if Input.is_action_just_pressed("ui_page_down"):
+            soul_push_back(2)
+            
+        if Input.is_action_just_pressed("ui_end"):
+            soul_push_back(3)
         
-    elif Input.is_action_pressed("ui_right") and Input.is_action_pressed("ui_down"):
-        move(6, delta)
+        # long chain of exclusive combinations of arrow key inputs, used to control direction of animation, speed of movement, and direction of movement
+        if !(Input.is_action_pressed("ui_up") or Input.is_action_pressed("ui_right") or Input.is_action_pressed("ui_down") or Input.is_action_pressed("ui_left")):
+            # standing animation
+            var sprite = get_node("AnimatedSprite")
+            # sprite needs to not be rotated, so it is always face up
+            sprite.rotation = 0
+            rotation = 0
+            #print("stand")
+            stand(delta)
+            
+        elif Input.is_action_pressed("ui_up") and Input.is_action_pressed("ui_right") and Input.is_action_pressed("ui_down") and Input.is_action_pressed("ui_left"):
+            pass
         
-    elif Input.is_action_pressed("ui_left") and Input.is_action_pressed("ui_down"):
-        move(7, delta)
-    
-    elif Input.is_action_pressed("ui_up"):
-        move(0, delta)
+        elif Input.is_action_pressed("ui_up") and Input.is_action_pressed("ui_right") and Input.is_action_pressed("ui_down"):
+            move(1, delta)
         
-    elif Input.is_action_pressed("ui_right"):
-        move(1, delta)
+        elif Input.is_action_pressed("ui_right") and Input.is_action_pressed("ui_down") and Input.is_action_pressed("ui_left"):
+            move(2, delta)
         
-    elif Input.is_action_pressed("ui_down"):
-        move(2, delta)
+        elif Input.is_action_pressed("ui_down") and Input.is_action_pressed("ui_left") and Input.is_action_pressed("ui_up"):
+            move(3, delta)
         
-    elif Input.is_action_pressed("ui_left"):
-        move(3, delta)
+        elif Input.is_action_pressed("ui_left") and Input.is_action_pressed("ui_up") and Input.is_action_pressed("ui_right"):
+            move(0, delta)
+        
+        elif Input.is_action_pressed("ui_left") and Input.is_action_pressed("ui_up"):
+            move(4, delta)
+            
+        elif Input.is_action_pressed("ui_right") and Input.is_action_pressed("ui_up"):
+            move(5, delta)
+            
+        elif Input.is_action_pressed("ui_right") and Input.is_action_pressed("ui_down"):
+            move(6, delta)
+            
+        elif Input.is_action_pressed("ui_left") and Input.is_action_pressed("ui_down"):
+            move(7, delta)
+        
+        elif Input.is_action_pressed("ui_up"):
+            move(0, delta)
+            
+        elif Input.is_action_pressed("ui_right"):
+            move(1, delta)
+            
+        elif Input.is_action_pressed("ui_down"):
+            move(2, delta)
+            
+        elif Input.is_action_pressed("ui_left"):
+            move(3, delta)
     
     for i in len(speed):
         if speed[i] <= 0:
@@ -483,13 +489,54 @@ func take_damage(hit_base_damage, hit_soul):
     #print("health remaining: %s" % health)
     
     if health <= 0:
-        die()
+        queue_die()
 
-func die():
+func queue_die():
+    if ready_to_die:
+        return
+        
+    ready_to_die = true
+    die_counter = 4
+    var audio = get_parent().get_node("AudioStreamPlayer2D")
+    audio.stop()
+    audio.stream = ji_death
+    audio.play()
+    get_node("CollisionShape2D").disabled = true
+    if speed[0] == 0 and speed[1] == 0 and speed[2] == 0 and speed[3] == 0:
+        direction = Vector2(-1, -1) / sqrt(2)
+    else:
+        direction = -direction
+    speed = [speed[2], speed[3], speed[0], speed[1]]
+    drag = 12
+
+func die():  
     if health > 0:
         health = 0
         emit_signal("player_hit", 0, 1, max_health)
     print("game over")
+    
+    var perms = []
+    var seen = {}
+    
+    for i in 4:
+        for j in 4:
+            for k in 4:
+                for l in 4:
+                    var t = [i, j, k, l]
+                    t.sort()
+                    var s = "%s_%s_%s_%s" % [t[0], t[1], t[2], t[3]]
+                    if !seen.has(s):
+                        perms.append([i, j, k, l])
+                        seen[s] = true
+    
+    for i in 35:     
+        var soul = perms[i]
+        var projectile = BasicProjectile.instance()
+        projectile.direction = Vector2.RIGHT.rotated(i * 2 * PI / 35)
+        projectile.position = position
+        projectile.get_node("Sprite").texture = get_basic_projectile_texture(soul)
+        get_parent().add_child(projectile)
+
     queue_free()
 
 func _on_Player_area_entered(area):
@@ -501,6 +548,13 @@ func _on_Player_area_entered(area):
 
 
 func _on_Timer_timeout():
+    if ready_to_die:
+        print(die_counter)
+        if die_counter > 0:
+            die_counter -= 1
+        else:
+            die()
+    
     if fire_shield_counter > 0:
         fire_shield_counter -= 1
     else:

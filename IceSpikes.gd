@@ -19,6 +19,6 @@ func _ready():
 func _on_IceSpikes_area_entered(area):
     if "type" in area:
         if area.type == "p":
-            area.die()
+            area.queue_die()
     
     pass # Replace with function body.

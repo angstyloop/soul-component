@@ -184,9 +184,9 @@ func take_damage(soul):
         # laugh
         pass
     health -= damage
-    print("hit by soul: {} {} {} {}".format([soul[0], soul[1], soul[2], soul[3]]))
-    print("took damage: %s" % damage)
-    print("health remaining: %s" % health)
+    #print("hit by soul: {} {} {} {}".format([soul[0], soul[1], soul[2], soul[3]]))
+    #print("took damage: %s" % damage)
+    #print("health remaining: %s" % health)
     if health <= 0:
         queue_free()
 
@@ -215,7 +215,7 @@ func _on_Yuki_area_entered(area):
         elif area.type == "p":
             # ensnare slow player
             if ! area.invincible:
-                area.die()
+                area.queue_die()
 
 func _on_Yuki_area_exited(area):
     if "drag" in area:

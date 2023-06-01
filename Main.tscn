@@ -150,6 +150,46 @@ animations = [ {
 "name": "cloud",
 "speed": 5.0
 }, {
+"frames": [ ExtResource( 67 ), ExtResource( 46 ), ExtResource( 45 ), ExtResource( 8 ), ExtResource( 41 ), ExtResource( 43 ), ExtResource( 44 ), ExtResource( 42 ), ExtResource( 47 ), ExtResource( 54 ), ExtResource( 53 ), ExtResource( 49 ), ExtResource( 52 ), ExtResource( 51 ), ExtResource( 50 ), ExtResource( 48 ), ExtResource( 55 ) ],
+"loop": true,
+"name": "cloud_back",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 67 ), ExtResource( 46 ), ExtResource( 45 ), ExtResource( 8 ), ExtResource( 41 ), ExtResource( 43 ), ExtResource( 44 ), ExtResource( 42 ), ExtResource( 47 ), ExtResource( 54 ), ExtResource( 53 ), ExtResource( 49 ), ExtResource( 52 ), ExtResource( 51 ), ExtResource( 50 ), ExtResource( 48 ), ExtResource( 55 ) ],
+"loop": true,
+"name": "cloud_back_left",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 67 ), ExtResource( 46 ), ExtResource( 45 ), ExtResource( 8 ), ExtResource( 41 ), ExtResource( 43 ), ExtResource( 44 ), ExtResource( 42 ), ExtResource( 47 ), ExtResource( 54 ), ExtResource( 53 ), ExtResource( 49 ), ExtResource( 52 ), ExtResource( 51 ), ExtResource( 50 ), ExtResource( 48 ), ExtResource( 55 ) ],
+"loop": true,
+"name": "cloud_back_right",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 67 ), ExtResource( 46 ), ExtResource( 45 ), ExtResource( 8 ), ExtResource( 41 ), ExtResource( 43 ), ExtResource( 44 ), ExtResource( 42 ), ExtResource( 47 ), ExtResource( 54 ), ExtResource( 53 ), ExtResource( 49 ), ExtResource( 52 ), ExtResource( 51 ), ExtResource( 50 ), ExtResource( 48 ), ExtResource( 55 ) ],
+"loop": true,
+"name": "cloud_front",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 67 ), ExtResource( 46 ), ExtResource( 45 ), ExtResource( 8 ), ExtResource( 41 ), ExtResource( 43 ), ExtResource( 44 ), ExtResource( 42 ), ExtResource( 47 ), ExtResource( 54 ), ExtResource( 53 ), ExtResource( 49 ), ExtResource( 52 ), ExtResource( 51 ), ExtResource( 50 ), ExtResource( 48 ), ExtResource( 55 ) ],
+"loop": true,
+"name": "cloud_front_left",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 67 ), ExtResource( 46 ), ExtResource( 45 ), ExtResource( 8 ), ExtResource( 41 ), ExtResource( 43 ), ExtResource( 44 ), ExtResource( 42 ), ExtResource( 47 ), ExtResource( 54 ), ExtResource( 53 ), ExtResource( 49 ), ExtResource( 52 ), ExtResource( 51 ), ExtResource( 50 ), ExtResource( 48 ), ExtResource( 55 ) ],
+"loop": true,
+"name": "cloud_front_right",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 67 ), ExtResource( 46 ), ExtResource( 45 ), ExtResource( 8 ), ExtResource( 41 ), ExtResource( 43 ), ExtResource( 44 ), ExtResource( 42 ), ExtResource( 47 ), ExtResource( 54 ), ExtResource( 53 ), ExtResource( 49 ), ExtResource( 52 ), ExtResource( 51 ), ExtResource( 50 ), ExtResource( 48 ), ExtResource( 55 ) ],
+"loop": true,
+"name": "cloud_left",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 67 ), ExtResource( 46 ), ExtResource( 45 ), ExtResource( 8 ), ExtResource( 41 ), ExtResource( 43 ), ExtResource( 44 ), ExtResource( 42 ), ExtResource( 47 ), ExtResource( 54 ), ExtResource( 53 ), ExtResource( 49 ), ExtResource( 52 ), ExtResource( 51 ), ExtResource( 50 ), ExtResource( 48 ), ExtResource( 55 ) ],
+"loop": true,
+"name": "cloud_right",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 46 ), ExtResource( 45 ), ExtResource( 8 ), ExtResource( 41 ), ExtResource( 43 ), ExtResource( 44 ), ExtResource( 42 ), ExtResource( 47 ), ExtResource( 54 ), ExtResource( 53 ), ExtResource( 49 ), ExtResource( 52 ), ExtResource( 51 ), ExtResource( 50 ), ExtResource( 48 ), ExtResource( 55 ) ],
 "loop": true,
 "name": "default",
@@ -302,7 +342,8 @@ script = ExtResource( 2 )
 position = Vector2( -1, -1 )
 rotation = 1.5708
 frames = SubResource( 6 )
-animation = "stand_front_left"
+animation = "cloud_front_right"
+frame = 14
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]

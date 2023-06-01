@@ -95,16 +95,16 @@ static func get_drag(soul):
     return base_drag + 3 * get_soul_component(soul, 2)
 
 static func get_initial_speed(soul):
-    return 1 * get_soul_component(soul, 3)
+    return 1 * (1 + get_soul_component(soul, 3))
 
 static func get_speed_limit(soul):
-    return 2500 * get_soul_component(soul, 3)
+    return 200 * (1 + get_soul_component(soul, 3))
 
 static func get_initial_acceleration(soul):
-    return 1250 * get_soul_component(soul, 3)
+    return 1000 * (1 + get_soul_component(soul, 3))
 
 static func get_acceleration_growth(soul):
-    return 25 * get_soul_component(soul, 3)
+    return 5 * get_soul_component(soul, 3)
 
 static func get_armor(soul):
     return 1 * get_soul_component(soul, 2)
@@ -127,7 +127,6 @@ func stand(_delta):
     
 func move(direction_index, delta):
     #print("move")
-    animation_prefix = "walk"
     if direction_index < 4:
         #print(direction_index)
         #print(position)
@@ -140,8 +139,6 @@ func move(direction_index, delta):
             speed[direction_index]  = speed_limit
 
         #rotation = -direction.angle_to(directions[2])
-        
-    # diagonals
     
     elif direction_index == 4:
         # left and up
@@ -149,9 +146,10 @@ func move(direction_index, delta):
             var t = initial_speed / sqrt(2)
             speed[3] = t
             speed[0] = t
-        var t = min(speed_limit, initial_acceleration * exp(acceleration_growth * delta) * delta / sqrt(2))
+        var t = initial_acceleration * exp(acceleration_growth * delta) * delta / sqrt(2)
         speed[3] += t
         speed[0] += t
+    # diagonals
 
     elif direction_index == 5:
         # up and right
@@ -159,7 +157,7 @@ func move(direction_index, delta):
             var t = initial_speed / sqrt(2)
             speed[0] = t
             speed[1] = t
-        var t = min(speed_limit, initial_acceleration * exp(acceleration_growth * delta) * delta / sqrt(2))
+        var t = initial_acceleration * exp(acceleration_growth * delta) * delta / sqrt(2)
         speed[0] += t
         speed[1] += t
 
@@ -169,7 +167,7 @@ func move(direction_index, delta):
             var t = initial_speed / sqrt(2)
             speed[1] = t
             speed[2] = t
-        var t = min(speed_limit, initial_acceleration * exp(acceleration_growth * delta) * delta / sqrt(2))
+        var t = initial_acceleration * exp(acceleration_growth * delta) * delta / sqrt(2)
         speed[1] += t
         speed[2] += t
         
@@ -179,7 +177,7 @@ func move(direction_index, delta):
             var t = initial_speed / sqrt(2)
             speed[2] = t
             speed[3] = t
-        var t = min(speed_limit, initial_acceleration * exp(acceleration_growth * delta) * delta / sqrt(2))
+        var t = initial_acceleration * exp(acceleration_growth * delta) * delta / sqrt(2)
         speed[2] += t
         speed[3] += t
     
@@ -187,6 +185,13 @@ func move(direction_index, delta):
     
     if v.length() > 0.0001:
         direction = v / v.length()
+    
+    if get_soul_component(soul, 3) == 4:
+        animation_prefix = "cloud"
+        rotation = PI / 2 - direction.angle_to(directions[2])
+    else:
+        animation_prefix = "walk"
+        rotation = 0
 
     #print(direction)
 
@@ -316,7 +321,7 @@ func _process(delta):
             speed[i] = 0
     
     var v = Vector2.UP * speed[0] + Vector2.RIGHT * speed[1] + Vector2.DOWN * speed[2] + Vector2.LEFT * speed[3]
-    position += v * delta
+    position += min(speed_limit, v.length()) * delta * direction
 
     if Input.is_action_just_pressed("ui_accept"):
         attack()

@@ -1,0 +1,271 @@
+[gd_scene load_steps=101 format=2]
+
+[ext_resource path="res://Ji.gd" type="Script" id=1]
+[ext_resource path="res://burn_1.png" type="Texture" id=3]
+[ext_resource path="res://ji_cloud_3.png" type="Texture" id=4]
+[ext_resource path="res://BasicProjectile.tscn" type="PackedScene" id=5]
+[ext_resource path="res://burn_3.png" type="Texture" id=6]
+[ext_resource path="res://burn_2.png" type="Texture" id=7]
+[ext_resource path="res://ji_cloud_4.png" type="Texture" id=8]
+[ext_resource path="res://ji_cloud_7.png" type="Texture" id=9]
+[ext_resource path="res://ji_cloud_5.png" type="Texture" id=10]
+[ext_resource path="res://ji_cloud_6.png" type="Texture" id=11]
+[ext_resource path="res://ji_cloud_2.png" type="Texture" id=12]
+[ext_resource path="res://ji_cloud_1.png" type="Texture" id=13]
+[ext_resource path="res://ji_cloud_8.png" type="Texture" id=14]
+[ext_resource path="res://ji_cloud_15.png" type="Texture" id=15]
+[ext_resource path="res://ji_cloud_11.png" type="Texture" id=16]
+[ext_resource path="res://ji_cloud_14.png" type="Texture" id=17]
+[ext_resource path="res://ji_cloud_13.png" type="Texture" id=18]
+[ext_resource path="res://ji_cloud_12.png" type="Texture" id=19]
+[ext_resource path="res://ji_cloud_10.png" type="Texture" id=20]
+[ext_resource path="res://ji_cloud_9.png" type="Texture" id=21]
+[ext_resource path="res://ji_cloud_16.png" type="Texture" id=22]
+[ext_resource path="res://ji_cloud.png" type="Texture" id=23]
+[ext_resource path="res://ji_5.png" type="Texture" id=24]
+[ext_resource path="res://ji_6.png" type="Texture" id=25]
+[ext_resource path="res://ji_3.png" type="Texture" id=26]
+[ext_resource path="res://ji_4.png" type="Texture" id=27]
+[ext_resource path="res://ji_2.png" type="Texture" id=28]
+[ext_resource path="res://ji_8.png" type="Texture" id=29]
+[ext_resource path="res://ji_1.png" type="Texture" id=30]
+[ext_resource path="res://ji.png" type="Texture" id=31]
+[ext_resource path="res://ji_7.png" type="Texture" id=32]
+[ext_resource path="res://ji_walk_back_2.png" type="Texture" id=33]
+[ext_resource path="res://ji_walk_back_right_1.png" type="Texture" id=34]
+[ext_resource path="res://ji_walk_back_left_3.png" type="Texture" id=35]
+[ext_resource path="res://ji_walk_back_right_4.png" type="Texture" id=36]
+[ext_resource path="res://ji_walk_left_3.png" type="Texture" id=37]
+[ext_resource path="res://ji_walk_back_7.png" type="Texture" id=38]
+[ext_resource path="res://ji_walk_back_left_6.png" type="Texture" id=39]
+[ext_resource path="res://ji_walk_right_4.png" type="Texture" id=40]
+[ext_resource path="res://ji_walk_back_6.png" type="Texture" id=41]
+[ext_resource path="res://ji_walk_back_3.png" type="Texture" id=42]
+[ext_resource path="res://ji_walk_back_1.png" type="Texture" id=43]
+[ext_resource path="res://ji_walk_right_1.png" type="Texture" id=44]
+[ext_resource path="res://ji_walk_back_left_4.png" type="Texture" id=45]
+[ext_resource path="res://ji_walk_front_right_2.png" type="Texture" id=46]
+[ext_resource path="res://ji_walk_front_right_6.png" type="Texture" id=47]
+[ext_resource path="res://ji_walk_back_right_5.png" type="Texture" id=48]
+[ext_resource path="res://ji_walk_front_right_4.png" type="Texture" id=49]
+[ext_resource path="res://ji_walk_back_5.png" type="Texture" id=50]
+[ext_resource path="res://ji_walk_back_4.png" type="Texture" id=51]
+[ext_resource path="res://ji_walk_right_8.png" type="Texture" id=52]
+[ext_resource path="res://ji_walk_front_left_8.png" type="Texture" id=53]
+[ext_resource path="res://ji_walk_front_9.png" type="Texture" id=54]
+[ext_resource path="res://ji_walk_back_right_6.png" type="Texture" id=55]
+[ext_resource path="res://ji_walk_left_2.png" type="Texture" id=56]
+[ext_resource path="res://ji_walk_back_right_7.png" type="Texture" id=57]
+[ext_resource path="res://ji_walk_front_right_8.png" type="Texture" id=58]
+[ext_resource path="res://ji_walk_front_6.png" type="Texture" id=59]
+[ext_resource path="res://ji_walk_front_left_3.png" type="Texture" id=60]
+[ext_resource path="res://ji_walk_back_right_2.png" type="Texture" id=61]
+[ext_resource path="res://ji_walk_back_left_5.png" type="Texture" id=62]
+[ext_resource path="res://ji_walk_front_left_5.png" type="Texture" id=63]
+[ext_resource path="res://ji_walk_front_left_2.png" type="Texture" id=64]
+[ext_resource path="res://ji_walk_front_left_6.png" type="Texture" id=65]
+[ext_resource path="res://ji_walk_back_right_3.png" type="Texture" id=66]
+[ext_resource path="res://ji_walk_front_7.png" type="Texture" id=67]
+[ext_resource path="res://ji_walk_back_left_7.png" type="Texture" id=68]
+[ext_resource path="res://ji_walk_front_right_1.png" type="Texture" id=69]
+[ext_resource path="res://ji_walk_back_right_8.png" type="Texture" id=70]
+[ext_resource path="res://ji_walk_front_right_3.png" type="Texture" id=71]
+[ext_resource path="res://ji_walk_front_left_9.png" type="Texture" id=72]
+[ext_resource path="res://ji_walk_front_left_7.png" type="Texture" id=73]
+[ext_resource path="res://ji_walk_front_left_4.png" type="Texture" id=74]
+[ext_resource path="res://ji_walk_right_5.png" type="Texture" id=75]
+[ext_resource path="res://ji_walk_front_right_5.png" type="Texture" id=76]
+[ext_resource path="res://ji_walk_right_6.png" type="Texture" id=77]
+[ext_resource path="res://ji_walk_front_right_9.png" type="Texture" id=78]
+[ext_resource path="res://ji_walk_front_5.png" type="Texture" id=79]
+[ext_resource path="res://ji_walk_front_8.png" type="Texture" id=80]
+[ext_resource path="res://ji_walk_back_left_8.png" type="Texture" id=81]
+[ext_resource path="res://ji_walk_left_5.png" type="Texture" id=82]
+[ext_resource path="res://ji_walk_back_left_1.png" type="Texture" id=83]
+[ext_resource path="res://ji_walk_front_3.png" type="Texture" id=84]
+[ext_resource path="res://ji_walk_front_left_1.png" type="Texture" id=85]
+[ext_resource path="res://ji_walk_front_4.png" type="Texture" id=86]
+[ext_resource path="res://ji_walk_back_8.png" type="Texture" id=87]
+[ext_resource path="res://ji_walk_front_right_7.png" type="Texture" id=88]
+[ext_resource path="res://ji_walk_left_7.png" type="Texture" id=89]
+[ext_resource path="res://ji_walk_left_6.png" type="Texture" id=90]
+[ext_resource path="res://ji_walk_right_2.png" type="Texture" id=91]
+[ext_resource path="res://ji_walk_left_8.png" type="Texture" id=92]
+[ext_resource path="res://ji_walk_right_3.png" type="Texture" id=93]
+[ext_resource path="res://ji_walk_left_4.png" type="Texture" id=94]
+[ext_resource path="res://ji_walk_right_7.png" type="Texture" id=95]
+[ext_resource path="res://ji_walk_back_left_2.png" type="Texture" id=96]
+[ext_resource path="res://ji_walk_left_1.png" type="Texture" id=97]
+[ext_resource path="res://ji_walk_front_1.png" type="Texture" id=98]
+[ext_resource path="res://ji_walk_front_2.png" type="Texture" id=99]
+
+[sub_resource type="SpriteFrames" id=6]
+animations = [ {
+"frames": [ ExtResource( 3 ), ExtResource( 7 ), ExtResource( 6 ) ],
+"loop": false,
+"name": "burn",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( 23 ), ExtResource( 13 ), ExtResource( 12 ), ExtResource( 4 ), ExtResource( 8 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 9 ), ExtResource( 14 ), ExtResource( 21 ), ExtResource( 20 ), ExtResource( 16 ), ExtResource( 19 ), ExtResource( 18 ), ExtResource( 17 ), ExtResource( 15 ), ExtResource( 22 ) ],
+"loop": true,
+"name": "cloud",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 23 ), ExtResource( 13 ), ExtResource( 12 ), ExtResource( 4 ), ExtResource( 8 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 9 ), ExtResource( 14 ), ExtResource( 21 ), ExtResource( 20 ), ExtResource( 16 ), ExtResource( 19 ), ExtResource( 18 ), ExtResource( 17 ), ExtResource( 15 ), ExtResource( 22 ) ],
+"loop": true,
+"name": "cloud_back",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 23 ), ExtResource( 13 ), ExtResource( 12 ), ExtResource( 4 ), ExtResource( 8 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 9 ), ExtResource( 14 ), ExtResource( 21 ), ExtResource( 20 ), ExtResource( 16 ), ExtResource( 19 ), ExtResource( 18 ), ExtResource( 17 ), ExtResource( 15 ), ExtResource( 22 ) ],
+"loop": true,
+"name": "cloud_back_left",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 23 ), ExtResource( 13 ), ExtResource( 12 ), ExtResource( 4 ), ExtResource( 8 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 9 ), ExtResource( 14 ), ExtResource( 21 ), ExtResource( 20 ), ExtResource( 16 ), ExtResource( 19 ), ExtResource( 18 ), ExtResource( 17 ), ExtResource( 15 ), ExtResource( 22 ) ],
+"loop": true,
+"name": "cloud_back_right",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 23 ), ExtResource( 13 ), ExtResource( 12 ), ExtResource( 4 ), ExtResource( 8 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 9 ), ExtResource( 14 ), ExtResource( 21 ), ExtResource( 20 ), ExtResource( 16 ), ExtResource( 19 ), ExtResource( 18 ), ExtResource( 17 ), ExtResource( 15 ), ExtResource( 22 ) ],
+"loop": true,
+"name": "cloud_front",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 23 ), ExtResource( 13 ), ExtResource( 12 ), ExtResource( 4 ), ExtResource( 8 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 9 ), ExtResource( 14 ), ExtResource( 21 ), ExtResource( 20 ), ExtResource( 16 ), ExtResource( 19 ), ExtResource( 18 ), ExtResource( 17 ), ExtResource( 15 ), ExtResource( 22 ) ],
+"loop": true,
+"name": "cloud_front_left",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 23 ), ExtResource( 13 ), ExtResource( 12 ), ExtResource( 4 ), ExtResource( 8 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 9 ), ExtResource( 14 ), ExtResource( 21 ), ExtResource( 20 ), ExtResource( 16 ), ExtResource( 19 ), ExtResource( 18 ), ExtResource( 17 ), ExtResource( 15 ), ExtResource( 22 ) ],
+"loop": true,
+"name": "cloud_front_right",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 23 ), ExtResource( 13 ), ExtResource( 12 ), ExtResource( 4 ), ExtResource( 8 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 9 ), ExtResource( 14 ), ExtResource( 21 ), ExtResource( 20 ), ExtResource( 16 ), ExtResource( 19 ), ExtResource( 18 ), ExtResource( 17 ), ExtResource( 15 ), ExtResource( 22 ) ],
+"loop": true,
+"name": "cloud_left",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 23 ), ExtResource( 13 ), ExtResource( 12 ), ExtResource( 4 ), ExtResource( 8 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 9 ), ExtResource( 14 ), ExtResource( 21 ), ExtResource( 20 ), ExtResource( 16 ), ExtResource( 19 ), ExtResource( 18 ), ExtResource( 17 ), ExtResource( 15 ), ExtResource( 22 ) ],
+"loop": true,
+"name": "cloud_right",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 13 ), ExtResource( 12 ), ExtResource( 4 ), ExtResource( 8 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 9 ), ExtResource( 14 ), ExtResource( 21 ), ExtResource( 20 ), ExtResource( 16 ), ExtResource( 19 ), ExtResource( 18 ), ExtResource( 17 ), ExtResource( 15 ), ExtResource( 22 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 31 ), ExtResource( 30 ), ExtResource( 28 ), ExtResource( 26 ), ExtResource( 27 ), ExtResource( 24 ), ExtResource( 25 ), ExtResource( 32 ), ExtResource( 29 ) ],
+"loop": true,
+"name": "sit",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 43 ) ],
+"loop": true,
+"name": "stand_back",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 83 ) ],
+"loop": true,
+"name": "stand_back_left",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 34 ) ],
+"loop": true,
+"name": "stand_back_right",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 98 ) ],
+"loop": true,
+"name": "stand_front",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 85 ) ],
+"loop": true,
+"name": "stand_front_left",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 69 ) ],
+"loop": true,
+"name": "stand_front_right",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 97 ) ],
+"loop": true,
+"name": "stand_left",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 44 ) ],
+"loop": true,
+"name": "stand_right",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 43 ), ExtResource( 33 ), ExtResource( 42 ), ExtResource( 51 ), ExtResource( 50 ), ExtResource( 41 ), ExtResource( 38 ), ExtResource( 87 ) ],
+"loop": true,
+"name": "walk_back",
+"speed": 24.0
+}, {
+"frames": [ ExtResource( 83 ), ExtResource( 96 ), ExtResource( 35 ), ExtResource( 45 ), ExtResource( 62 ), ExtResource( 39 ), ExtResource( 68 ), ExtResource( 81 ) ],
+"loop": true,
+"name": "walk_back_left",
+"speed": 24.0
+}, {
+"frames": [ ExtResource( 34 ), ExtResource( 61 ), ExtResource( 66 ), ExtResource( 36 ), ExtResource( 48 ), ExtResource( 55 ), ExtResource( 57 ), ExtResource( 70 ) ],
+"loop": true,
+"name": "walk_back_right",
+"speed": 24.0
+}, {
+"frames": [ ExtResource( 98 ), ExtResource( 99 ), ExtResource( 84 ), ExtResource( 86 ), ExtResource( 79 ), ExtResource( 59 ), ExtResource( 67 ), ExtResource( 80 ), ExtResource( 54 ) ],
+"loop": true,
+"name": "walk_front",
+"speed": 24.0
+}, {
+"frames": [ ExtResource( 85 ), ExtResource( 64 ), ExtResource( 60 ), ExtResource( 74 ), ExtResource( 63 ), ExtResource( 65 ), ExtResource( 73 ), ExtResource( 53 ), ExtResource( 72 ) ],
+"loop": true,
+"name": "walk_front_left",
+"speed": 24.0
+}, {
+"frames": [ ExtResource( 69 ), ExtResource( 46 ), ExtResource( 71 ), ExtResource( 49 ), ExtResource( 76 ), ExtResource( 47 ), ExtResource( 88 ), ExtResource( 58 ), ExtResource( 78 ) ],
+"loop": true,
+"name": "walk_front_right",
+"speed": 24.0
+}, {
+"frames": [ ExtResource( 97 ), ExtResource( 56 ), ExtResource( 37 ), ExtResource( 94 ), ExtResource( 82 ), ExtResource( 90 ), ExtResource( 89 ), ExtResource( 92 ) ],
+"loop": true,
+"name": "walk_left",
+"speed": 24.0
+}, {
+"frames": [ ExtResource( 44 ), ExtResource( 91 ), ExtResource( 93 ), ExtResource( 40 ), ExtResource( 75 ), ExtResource( 77 ), ExtResource( 95 ), ExtResource( 52 ) ],
+"loop": false,
+"name": "walk_right",
+"speed": 24.0
+} ]
+
+[sub_resource type="CapsuleShape2D" id=9]
+radius = 10.749
+height = 16.5486
+
+[node name="Ji" type="Area2D"]
+position = Vector2( 327, 367 )
+script = ExtResource( 1 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+position = Vector2( -1, -1 )
+rotation = 1.5708
+frames = SubResource( 6 )
+animation = "cloud_front_right"
+frame = 11
+playing = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( -2, -2 )
+rotation = 0.0698132
+shape = SubResource( 9 )
+
+[node name="BasicProjectile" parent="." instance=ExtResource( 5 )]
+position = Vector2( 0, 40 )
+
+[connection signal="area_entered" from="." to="." method="_on_Ji_area_entered"]
+[connection signal="animation_finished" from="AnimatedSprite" to="." method="_on_AnimatedSprite_animation_finished"]
+[connection signal="tree_entered" from="BasicProjectile" to="." method="_on_BasicProjectile_tree_entered"]

@@ -1,21 +1,15 @@
 extends AudioStreamPlayer2D
 
-
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-    pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#    pass
-
+const ji_death = preload("res://ji_death.wav")
 
 func _on_Timer_timeout():
     if not playing:
+        volume_db = 0
         play()
+
+func _on_Ji_ready_to_die():
+    stop()
+    volume_db = -10
+    stream = ji_death
+    autoplay = false
+    play()

@@ -8,16 +8,17 @@ var base_projectile_speed
 var beat_counter
 var beat_array
 var spin_speed
+var omni_gate_used
 
 enum {START_MOVE_TO_PLAYER,  STOP_MOVE_TO_PLAYER, ATTACK_PLAYER, START_SPINNING, STOP_SPINNING}
 
 const projectile_texture = preload("res://ice_spikes.png")
-const BasicProjectile = preload("res://BasicProjectile.tscn")
+const YukiProjectile = preload("res://YukiProjectile.tscn")
 
 func _init():
     #var size = OS.get_real_window_size()
     #position = Vector2(size[0] / 2, size[1] / 2)
-    
+    omni_gate_used = false
     damage_key = [1, -1, -1, -1]
     health = 10
     speed = 0
@@ -202,7 +203,7 @@ func _on_Yuki_area_entered(area):
             if proj_speed  > air_shield_threshold_speed:
                 # hit by fast projectile
                 take_damage(area.soul)
-                area.queue_free()
+                area.hit = true
             else:
                 # freeze slow projectile
                 #area.speed = [0, 0, 0, 0]
@@ -229,7 +230,7 @@ func attack_player(player):
     get_node("AnimatedSprite").play("attack")
     var pos = player.position
     var target_pos = Vector2(pos[0], pos[1])
-    var proj = BasicProjectile.instance()
+    var proj = YukiProjectile.instance()
     proj.direction = position.direction_to(target_pos)
     var ice_spikes_radius = 24
     proj.position = position + 2.5 * ice_spikes_radius * proj.direction
@@ -253,10 +254,9 @@ func stop_move_to_player(_player):
     speed = 0
     direction = Vector2.ZERO
 
-func _on_Timer_timeout():
-    var player = get_parent().get_node("Player")
-    
-    do_actions(player)
+func _on_Beats_timeout():
+    if not omni_gate_used:
+        do_actions(get_parent().get_node("Ji"))
         
 func _on_AnimatedSprite_animation_finished():
     var animated_sprite = get_node("AnimatedSprite")
@@ -270,3 +270,12 @@ func _process(delta):
     
     if spin_speed > 0.000001:
         rotation += fmod((spin_speed * delta), 360)
+
+
+func _on_Ji_use_omni_gate():
+    omni_gate_used = true
+    speed = 0
+    spin_speed = 0
+    get_node("AnimatedSprite").stop()
+    get_node("CollisionShape2D").disabled = true
+

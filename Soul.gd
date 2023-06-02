@@ -22,7 +22,7 @@ static func remove_all_children(node):
         node.remove_child(child)
         child.queue_free()
             
-func _on_Player_soul_switch(soul):
+func _on_Ji_soul_switch(soul):
     if (len(get_children()) == 0):
         _init()
     else:

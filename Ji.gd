@@ -14,11 +14,10 @@ var acceleration_growth
 var drag
 var stopping_speed
 
+var thrown_irla = null
+var held_irla = null
+
 var last_delta
-var top_boundary_position
-var right_boundary_position
-var bottom_boundary_position
-var left_boundary_position
 
 var health
 var max_health
@@ -31,7 +30,6 @@ var fire_shield_cooldown_counter
 var attack_cooldown_counter
 var ready_to_die
 var die_counter
-
 var animation_prefix
 
 var type = "p"
@@ -44,11 +42,12 @@ const base_drag = 4
 const BasicProjectile = preload("res://BasicProjectile.tscn")
 const basic_projectiles = {"0_0_0_0": preload("res://basic_projectile_0_0_0_0.png"), "0_0_0_1": preload("res://basic_projectile_0_0_0_1.png"), "0_0_0_2": preload("res://basic_projectile_0_0_0_2.png"), "0_0_0_3": preload("res://basic_projectile_0_0_0_3.png"), "0_0_1_1": preload("res://basic_projectile_0_0_1_1.png"), "0_0_1_2": preload("res://basic_projectile_0_0_1_2.png"), "0_0_1_3": preload("res://basic_projectile_0_0_1_3.png"), "0_0_2_2": preload("res://basic_projectile_0_0_2_2.png"), "0_0_2_3": preload("res://basic_projectile_0_0_2_3.png"), "0_0_3_3": preload("res://basic_projectile_0_0_3_3.png"), "0_1_1_1": preload("res://basic_projectile_0_1_1_1.png"), "0_1_1_2": preload("res://basic_projectile_0_1_1_2.png"), "0_1_1_3": preload("res://basic_projectile_0_1_1_3.png"), "0_1_2_2": preload("res://basic_projectile_0_1_2_2.png"), "0_1_2_3": preload("res://basic_projectile_0_1_2_3.png"), "0_1_3_3": preload("res://basic_projectile_0_1_3_3.png"), "0_2_2_2": preload("res://basic_projectile_0_2_2_2.png"), "0_2_2_3": preload("res://basic_projectile_0_2_2_3.png"), "0_2_3_3": preload("res://basic_projectile_0_2_3_3.png"), "0_3_3_3": preload("res://basic_projectile_0_3_3_3.png"), "1_1_1_1": preload("res://basic_projectile_1_1_1_1.png"), "1_1_1_2": preload("res://basic_projectile_1_1_1_2.png"), "1_1_1_3": preload("res://basic_projectile_1_1_1_3.png"), "1_1_2_2": preload("res://basic_projectile_1_1_2_2.png"), "1_1_2_3": preload("res://basic_projectile_1_1_2_3.png"), "1_1_3_3": preload("res://basic_projectile_1_1_3_3.png"), "1_2_2_2": preload("res://basic_projectile_1_2_2_2.png"), "1_2_2_3": preload("res://basic_projectile_1_2_2_3.png"), "1_2_3_3": preload("res://basic_projectile_1_2_3_3.png"), "1_3_3_3": preload("res://basic_projectile_1_3_3_3.png"), "2_2_2_2": preload("res://basic_projectile_2_2_2_2.png"), "2_2_2_3": preload("res://basic_projectile_2_2_2_3.png"), "2_2_3_3": preload("res://basic_projectile_2_2_3_3.png"), "2_3_3_3": preload("res://basic_projectile_2_3_3_3.png"), "3_3_3_3": preload("res://basic_projectile_3_3_3_3.png")}
 const FireShield = preload("res://FireShield.tscn")
-const ji_death = preload("res://ji_death.wav")
 
 signal soul_switch(soul)
-signal player_attack(soul)
 signal player_hit(new_health, damage)
+signal use_omni_gate()
+signal ready_to_die()
+signal player_move(old_position, old_speed, old_direction, displacement)
 
 func _init():
     first_run = true
@@ -59,7 +58,7 @@ func _init():
     soul = [0, 0, 0, 0]    
     speed = [0, 0, 0, 0]
     
-    direction = Vector2.ZERO
+    direction = Vector2.RIGHT
     
     max_health = 10
     health = max_health
@@ -73,10 +72,7 @@ func _init():
     die_counter = 0
     
     last_delta = 100
-    top_boundary_position = 0
-    right_boundary_position = 450 * 2
-    bottom_boundary_position = 450 * 2
-    left_boundary_position = 0
+    animation_prefix = "walk"
     
     update_stats(soul)
 
@@ -128,8 +124,9 @@ func soul_push_back(soul_index):
         soul[i] = soul[i + 1]
     soul[len_soul - 1] = soul_index
     emit_signal("soul_switch", soul)
-    update_stats(soul)  
-    get_node("BasicProjectile/Sprite").texture = get_basic_projectile_texture(soul)
+    update_stats(soul)
+    if held_irla:
+        held_irla.get_node("Sprite").texture = get_basic_projectile_texture(soul)
 
 func stand(_delta):
     animation_prefix = "stand"
@@ -200,15 +197,12 @@ func move(direction_index, delta):
         animation_prefix = "walk"
         rotation = 0
         
-    var children = get_children()
-    var irla = get_node("BasicProjectile")
-    if irla:
-        irla.speed = [0, 0, 0, 0]
-        irla.base_speed = 0
-        irla.position_fixed = true
-        irla.get_node("CollisionShape2D").disabled = true
-        irla.position = direction * 2 * get_node("CollisionShape2D").shape.radius
-        irla.get_node("Sprite").texture = get_basic_projectile_texture(soul)
+    #if held_irla:
+        #held_irla.speed = [0, 0, 0, 0]
+        #held_irla.base_speed = 0
+        #held_irla.get_node("CollisionShape2D").disabled = true
+        #held_irla.position = direction * 2 * get_node("CollisionShape2D").shape.radius
+        #held_irla.get_node("Sprite").texture = get_basic_projectile_texture(soul)
 
     #print(direction)
 
@@ -218,15 +212,16 @@ func get_basic_projectile_texture(soul):
     return basic_projectiles["{0}_{1}_{2}_{3}".format([soul_sorted[0], soul_sorted[1], soul_sorted[2], soul_sorted[3]])]
 
 func attack():
-    if attack_cooldown_counter > 0:
-        pass
-    else:
+    #print("attack")
+    #print("attack_cooldown_counter: %s" % attack_cooldown_counter)
+    #print("held_irla null?: %s" % (held_irla == null))
+    if attack_cooldown_counter == 0 && held_irla:
+        thrown_irla = held_irla
+        held_irla = null
+        #print("attack")
         attack_cooldown_counter = 4
-        
-        var thrown_irla = get_node("BasicProjectile")
         thrown_irla.held = false
         thrown_irla.base_speed = 2
-        thrown_irla.position_fixed = false
         thrown_irla.direction = direction
         thrown_irla.get_node("CollisionShape2D").disabled = false
         var radius = thrown_irla.get_node("CollisionShape2D").shape.radius
@@ -236,17 +231,6 @@ func attack():
         thrown_irla.soul = soul.duplicate()
         remove_child(thrown_irla)
         get_parent().add_child(thrown_irla)
-
-        var new_irla = BasicProjectile.instance()
-        new_irla.held = true
-        new_irla.speed = [0, 0, 0, 0]
-        new_irla.base_speed = 0
-        new_irla.position_fixed = true
-        new_irla.get_node("CollisionShape2D").disabled = true
-        new_irla.position = position + direction * 2 * (radius + get_node("CollisionShape2D").shape.radius)
-        new_irla.get_node("Sprite").texture = get_basic_projectile_texture(soul)
-        new_irla.direction = Vector2(direction[0], direction[1])
-        add_child(new_irla)
 
 func burn(damage):
     var animated_sprite = get_node("AnimatedSprite")
@@ -263,6 +247,16 @@ func use_fire_shield():
         fire_shield = FireShield.instance()
         add_child(fire_shield)
 
+func use_omni_gate():
+    # no cd for omni gate, since it's the pause menu essentially
+    emit_signal("use_omni_gate")
+    var level = get_parent()
+    var root = level.get_parent()
+    root.remove_child(level)
+    level.call_deferred("free")
+    var omni = load("res://Omni.tscn")
+    root.add_child(omni.instance())
+
 func disable_fire_shield():
     invincible = false
     if fire_shield != null:
@@ -272,24 +266,22 @@ func disable_fire_shield():
     fire_shield_counter = 0
 
 func use_soul_special():
-    var soul_string = "{0}_{1}_{2}_{3}".format([soul[0], soul[1], soul[2], soul[3]])
+    var soul_sorted = [soul[0], soul[1], soul[2], soul[3]]
+    soul_sorted.sort()
+    var soul_string = "{0}_{1}_{2}_{3}".format(soul_sorted)
+    #print("soul_string")
+    print(soul_string)
     if soul_string == "0_0_0_0":
         use_fire_shield()
+    elif soul_string == "0_1_2_3":
+        use_omni_gate()
     else:
         attack()
 
-func _process(delta):
+
+func _process(delta):        
     if (first_run):
-        first_run = false
-        var children = get_children()
-        var irla = get_children()[2]
-        irla.held = true
-        irla.speed = [0, 0, 0, 0]
-        irla.base_speed = 0
-        irla.position_fixed = true
-        irla.get_node("CollisionShape2D").disabled = true
-        irla.position = direction * 2 * get_node("CollisionShape2D").shape.radius
-        irla.get_node("Sprite").texture = get_basic_projectile_texture(soul)
+        return
     
     if !ready_to_die:   
         if Input.is_action_just_pressed("ui_cancel"):
@@ -368,58 +360,16 @@ func _process(delta):
             speed[i] = 0
     
     var v = Vector2.UP * speed[0] + Vector2.RIGHT * speed[1] + Vector2.DOWN * speed[2] + Vector2.LEFT * speed[3]
-    position += min(speed_limit, v.length()) * delta * direction
+    var displacement = min(speed_limit, v.length()) * delta * direction
+    
+    if displacement.length() > 0.00001:
+        #print("player_move")
+        emit_signal("player_move", position, v, direction, displacement)
+    
+    position += displacement
 
     if Input.is_action_just_pressed("ui_accept"):
         attack()
-    
-    if position.x <= left_boundary_position + get_node("CollisionShape2D").shape.radius:
-        # reverse
-        position.x = left_boundary_position + get_node("CollisionShape2D").shape.radius
-        #if rotation < 180:
-        #    rotation += 180
-        #else:
-        #    rotation -= 180
-        var t = speed[1]
-        speed[1] = speed[3]
-        speed[3] = t
-        direction.x = -direction.x
-    
-    elif position.x >= right_boundary_position - get_node("CollisionShape2D").shape.radius:
-        # reverse
-        position.x = right_boundary_position - get_node("CollisionShape2D").shape.radius
-        #if rotation < 180:
-        #    rotation += 180
-        #else:
-        #    rotation -= 180
-        var t = speed[1]
-        speed[1] = speed[3]
-        speed[3] = t
-        direction.x = -direction.x
-        
-    if position.y <= top_boundary_position + get_node("CollisionShape2D").shape.radius:
-        # reverse
-        position.y = top_boundary_position + get_node("CollisionShape2D").shape.radius
-        #if rotation < 180:
-        #    rotation += 180
-        #else:
-        #    rotation -= 180
-        var t = speed[0]
-        speed[0] = speed[2]
-        speed[2] = t
-        direction.x = -direction.x
-        
-    elif position.y >= bottom_boundary_position - get_node("CollisionShape2D").shape.radius:
-        # reverse
-        position.y = bottom_boundary_position - get_node("CollisionShape2D").shape.radius
-        #if rotation < 180:
-        #    rotation += 180
-        #else:
-        #    rotation -= 180
-        var t = speed[0]
-        speed[0] = speed[2]
-        speed[2] = t
-        direction.x = -direction.x
     
     # determine the closest cardinal direction, and animate based on that
     var angle = direction.angle_to(Vector2.RIGHT) * 180/PI # bounded [-180, 180)
@@ -458,6 +408,9 @@ func _process(delta):
         #print("walk_front_right")
         sprite.play(animation_prefix + "_front_right")
     
+    if thrown_irla and thrown_irla.hit:
+        on_projectile_hit(thrown_irla)
+    
     # hang onto the previous delta in case we need to use it to calculate stuff
     last_delta = delta
         
@@ -495,12 +448,10 @@ func queue_die():
     if ready_to_die:
         return
         
-    ready_to_die = true
     die_counter = 4
-    var audio = get_parent().get_node("AudioStreamPlayer2D")
-    audio.stop()
-    audio.stream = ji_death
-    audio.play()
+
+    emit_signal("ready_to_die")
+
     get_node("CollisionShape2D").disabled = true
     if speed[0] == 0 and speed[1] == 0 and speed[2] == 0 and speed[3] == 0:
         direction = Vector2(-1, -1) / sqrt(2)
@@ -508,12 +459,13 @@ func queue_die():
         direction = -direction
     speed = [speed[2], speed[3], speed[0], speed[1]]
     drag = 12
-
+    ready_to_die = true
+    
 func die():  
     if health > 0:
         health = 0
         emit_signal("player_hit", 0, 1, max_health)
-    print("game over")
+    #print("game over")
     
     var perms = []
     var seen = {}
@@ -534,20 +486,43 @@ func die():
         var projectile = BasicProjectile.instance()
         projectile.direction = Vector2.RIGHT.rotated(i * 2 * PI / 35)
         projectile.position = position
+        projectile.get_node("CollisionShape2D").disabled = true
         projectile.get_node("Sprite").texture = get_basic_projectile_texture(soul)
         get_parent().add_child(projectile)
 
     queue_free()
 
-func _on_Player_area_entered(area):
+func _on_Ji_area_entered(area):
     if "type" in area:
         if area.type == "b":
             take_damage(area.base_damage, area.soul)
-            area.queue_free()
-    pass # Replace with function body.
+            area.hit = true
 
+func return_irla():
+    if !held_irla:
+        #print("return_irla")
+        if thrown_irla:
+            get_parent().remove_child(thrown_irla)
+            thrown_irla.queue_free()
+            thrown_irla = null
+        var new_irla = BasicProjectile.instance()
+        new_irla.z_index = 1
+        new_irla.speed = [0, 0, 0, 0]
+        new_irla.base_speed = 0
+        new_irla.get_node("CollisionShape2D").disabled = true
+        var radius = new_irla.get_node("CollisionShape2D").shape.radius
+        new_irla.position = position
+        new_irla.direction = [direction[0], direction[1]]
+        #new_irla.position = direction * 2 * (radius + get_node("CollisionShape2D").shape.radius)
+        #new_irla.position = direction * 2 * get_node("CollisionShape2D").shape.radius
+        new_irla.get_node("Sprite").texture = get_basic_projectile_texture(soul)
 
-func _on_Timer_timeout():
+        new_irla.visible = true
+        new_irla.held = true
+        held_irla = new_irla
+        add_child(new_irla)
+
+func _on_Beats_timeout():
     if ready_to_die:
         #print(die_counter)
         if die_counter > 0:
@@ -565,6 +540,8 @@ func _on_Timer_timeout():
     
     if attack_cooldown_counter > 0:
         attack_cooldown_counter -= 1
+    else:
+        return_irla()
 
 func _on_AnimatedSprite_animation_finished():
     #print("non-looping animation finished")
@@ -574,5 +551,19 @@ func _on_AnimatedSprite_animation_finished():
         animated_sprite.play()
 
 
-func _on_Player_player_attack(soul):
-    pass # Replace with function body.
+func _on_BasicProjectile_tree_entered():
+    if (first_run):
+        print("first irla")
+        held_irla = $BasicProjectile
+        held_irla.held = true
+        held_irla.speed = [0, 0, 0, 0]
+        held_irla.base_speed = 0
+        held_irla.get_node("CollisionShape2D").disabled = true
+        held_irla.position = direction * 2 * get_node("CollisionShape2D").shape.radius
+        held_irla.get_node("Sprite").texture = get_basic_projectile_texture(soul)
+        first_run = false
+
+func on_projectile_hit(projectile):
+    projectile.queue_free()
+    get_parent().remove_child(projectile)
+    return_irla()

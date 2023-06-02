@@ -1,0 +1,6 @@
+[gd_scene format=2]
+
+[node name="Timer" type="Timer"]
+process_mode = 0
+wait_time = 0.136
+autostart = true

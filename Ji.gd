@@ -35,6 +35,9 @@ var animation_prefix
 var exhale_counter
 const exhale_counter_max = 16
 
+var dragonfly_mode
+var dragonfly_animation_started
+
 var type = "p"
 
 var special = {}
@@ -46,6 +49,8 @@ const BasicProjectile = preload("res://BasicProjectile.tscn")
 const basic_projectiles = {"0_0_0_0": preload("res://basic_projectile_0_0_0_0.png"), "0_0_0_1": preload("res://basic_projectile_0_0_0_1.png"), "0_0_0_2": preload("res://basic_projectile_0_0_0_2.png"), "0_0_0_3": preload("res://basic_projectile_0_0_0_3.png"), "0_0_1_1": preload("res://basic_projectile_0_0_1_1.png"), "0_0_1_2": preload("res://basic_projectile_0_0_1_2.png"), "0_0_1_3": preload("res://basic_projectile_0_0_1_3.png"), "0_0_2_2": preload("res://basic_projectile_0_0_2_2.png"), "0_0_2_3": preload("res://basic_projectile_0_0_2_3.png"), "0_0_3_3": preload("res://basic_projectile_0_0_3_3.png"), "0_1_1_1": preload("res://basic_projectile_0_1_1_1.png"), "0_1_1_2": preload("res://basic_projectile_0_1_1_2.png"), "0_1_1_3": preload("res://basic_projectile_0_1_1_3.png"), "0_1_2_2": preload("res://basic_projectile_0_1_2_2.png"), "0_1_2_3": preload("res://basic_projectile_0_1_2_3.png"), "0_1_3_3": preload("res://basic_projectile_0_1_3_3.png"), "0_2_2_2": preload("res://basic_projectile_0_2_2_2.png"), "0_2_2_3": preload("res://basic_projectile_0_2_2_3.png"), "0_2_3_3": preload("res://basic_projectile_0_2_3_3.png"), "0_3_3_3": preload("res://basic_projectile_0_3_3_3.png"), "1_1_1_1": preload("res://basic_projectile_1_1_1_1.png"), "1_1_1_2": preload("res://basic_projectile_1_1_1_2.png"), "1_1_1_3": preload("res://basic_projectile_1_1_1_3.png"), "1_1_2_2": preload("res://basic_projectile_1_1_2_2.png"), "1_1_2_3": preload("res://basic_projectile_1_1_2_3.png"), "1_1_3_3": preload("res://basic_projectile_1_1_3_3.png"), "1_2_2_2": preload("res://basic_projectile_1_2_2_2.png"), "1_2_2_3": preload("res://basic_projectile_1_2_2_3.png"), "1_2_3_3": preload("res://basic_projectile_1_2_3_3.png"), "1_3_3_3": preload("res://basic_projectile_1_3_3_3.png"), "2_2_2_2": preload("res://basic_projectile_2_2_2_2.png"), "2_2_2_3": preload("res://basic_projectile_2_2_2_3.png"), "2_2_3_3": preload("res://basic_projectile_2_2_3_3.png"), "2_3_3_3": preload("res://basic_projectile_2_3_3_3.png"), "3_3_3_3": preload("res://basic_projectile_3_3_3_3.png")}
 const FireShield = preload("res://FireShield.tscn")
 const JiBreath = preload("res://JiBreath.tscn")
+
+const dragonfly_speed = 4000
 
 signal soul_switch(soul)
 signal player_hit(new_health, damage)
@@ -78,6 +83,8 @@ func _init():
     
     last_delta = 100
     animation_prefix = "walk"
+    dragonfly_mode = false
+    dragonfly_animation_started = false
     
     update_stats(soul)
 
@@ -283,15 +290,50 @@ func use_soul_special():
         use_fire_shield()
     elif soul_string == "0_1_2_3":
         use_omni_gate()
+    elif soul_string == "2_2_2_2":
+        use_dragonfly()
     else:
         attack()
 
+func start_dragonfly():
+    dragonfly_mode = true
+    
+    # play start_dragonfly animation
+    
+func end_dragonfly():
+    direction = Vector2.UP.rotated(rotation)
+    speed = [0, 0, 0, 0]
+    dragonfly_mode = false
+    dragonfly_animation_started = false
+    rotation = 90
+    # play end_dragonfly animation
+
+func use_dragonfly():
+    if dragonfly_mode:
+        end_dragonfly()
+    else:
+        start_dragonfly()
 
 func _process(delta):        
     if (first_run):
         return
     
-    if !ready_to_die:   
+    if !ready_to_die:
+        if dragonfly_mode:
+            if Input.is_action_pressed("ui_accept"):
+                # toggle dragonfly off
+                #print("end dragonfly")
+                use_dragonfly()
+            else:
+                # go really fast
+                #print("enter dragonfly")
+                var displacement = dragonfly_speed * direction * delta
+                position += displacement
+                if dragonfly_animation_started:
+                    rotation = Vector2.UP.angle_to(direction)
+                emit_signal("player_move", position, dragonfly_speed, direction, displacement)
+            return
+            
         if Input.is_action_just_pressed("ui_cancel"):
             use_soul_special()
         
@@ -384,7 +426,13 @@ func _process(delta):
     var sprite = get_node("AnimatedSprite")
     #print(angle)
     #print(animation_prefix)
-    if angle >= -22.5 && angle < 22.5:
+    if v.length() == 0:
+        if (angle >= 0 && angle <= 90) || (angle >= -90 && angle < 0):
+            sprite.play("sit_right")
+        else:
+            sprite.play("sit_left")
+    
+    elif angle >= -22.5 && angle < 22.5:
         #print("walk_right")
         sprite.play(animation_prefix + "_right")
         
@@ -531,6 +579,12 @@ func return_irla():
         add_child(new_irla)
 
 func _on_Beats_timeout():
+    if dragonfly_mode:
+        var sprite = $AnimatedSprite
+        if !dragonfly_animation_started:
+            sprite.play("dragonfly")
+            dragonfly_animation_started = true
+    
     if ready_to_die:
         #print(die_counter)
         if die_counter > 0:
@@ -564,11 +618,12 @@ func exhale():
     get_parent().add_child(breath)
 
 func _on_AnimatedSprite_animation_finished():
+    pass
     #print("non-looping animation finished")
-    var animated_sprite = get_node("AnimatedSprite")
-    if animated_sprite.animation != "default":
-        animated_sprite.animation = "default"
-        animated_sprite.play()
+    #var animated_sprite = get_node("AnimatedSprite")
+    #if animated_sprite.animat;ion != "default":
+    #    animated_sprite.animation = "default"
+    #    animated_sprite.play()
 
 
 func _on_BasicProjectile_tree_entered():

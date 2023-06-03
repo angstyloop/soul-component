@@ -66,7 +66,7 @@ func create_cards():
             var new_card = card_scene.instance()
 
             # Make each card invisible
-            new_card.visible = true
+            new_card.visible = false
             
             # Position the new card in correct space on the board.
             new_card.global_position.x = x * unit_length - board_length / 2 + unit_length / 2
@@ -152,4 +152,5 @@ func _on_Ji_player_move(old_position, old_speed, old_direction, displacement):
             # toggle the new card
             if card != null:
                 card.visible = ! card.visible
-
+    else:
+        card = null

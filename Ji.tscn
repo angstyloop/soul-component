@@ -1,6 +1,7 @@
-[gd_scene load_steps=101 format=2]
+[gd_scene load_steps=112 format=2]
 
 [ext_resource path="res://Ji.gd" type="Script" id=1]
+[ext_resource path="res://dragonfly_3.png" type="Texture" id=2]
 [ext_resource path="res://burn_1.png" type="Texture" id=3]
 [ext_resource path="res://ji_cloud_3.png" type="Texture" id=4]
 [ext_resource path="res://BasicProjectile.tscn" type="PackedScene" id=5]
@@ -22,15 +23,15 @@
 [ext_resource path="res://ji_cloud_9.png" type="Texture" id=21]
 [ext_resource path="res://ji_cloud_16.png" type="Texture" id=22]
 [ext_resource path="res://ji_cloud.png" type="Texture" id=23]
-[ext_resource path="res://ji_5.png" type="Texture" id=24]
-[ext_resource path="res://ji_6.png" type="Texture" id=25]
-[ext_resource path="res://ji_3.png" type="Texture" id=26]
-[ext_resource path="res://ji_4.png" type="Texture" id=27]
-[ext_resource path="res://ji_2.png" type="Texture" id=28]
-[ext_resource path="res://ji_8.png" type="Texture" id=29]
-[ext_resource path="res://ji_1.png" type="Texture" id=30]
-[ext_resource path="res://ji.png" type="Texture" id=31]
-[ext_resource path="res://ji_7.png" type="Texture" id=32]
+[ext_resource path="res://ji_sit_right_1.png" type="Texture" id=24]
+[ext_resource path="res://ji_sit_right_3.png" type="Texture" id=25]
+[ext_resource path="res://ji_sit_right_2.png" type="Texture" id=26]
+[ext_resource path="res://ji_sit_left_6.png" type="Texture" id=27]
+[ext_resource path="res://ji_sit_left_8.png" type="Texture" id=28]
+[ext_resource path="res://ji_sit_right_7.png" type="Texture" id=29]
+[ext_resource path="res://ji_sit_right_6.png" type="Texture" id=30]
+[ext_resource path="res://ji_sit_left_1.png" type="Texture" id=31]
+[ext_resource path="res://ji_sit_left_2.png" type="Texture" id=32]
 [ext_resource path="res://ji_walk_back_2.png" type="Texture" id=33]
 [ext_resource path="res://ji_walk_back_right_1.png" type="Texture" id=34]
 [ext_resource path="res://ji_walk_back_left_3.png" type="Texture" id=35]
@@ -98,6 +99,16 @@
 [ext_resource path="res://ji_walk_left_1.png" type="Texture" id=97]
 [ext_resource path="res://ji_walk_front_1.png" type="Texture" id=98]
 [ext_resource path="res://ji_walk_front_2.png" type="Texture" id=99]
+[ext_resource path="res://dragonfly_1.png" type="Texture" id=100]
+[ext_resource path="res://dragonfly_2.png" type="Texture" id=101]
+[ext_resource path="res://dragonfly_4.png" type="Texture" id=102]
+[ext_resource path="res://ji_sit_right_5.png" type="Texture" id=103]
+[ext_resource path="res://ji_sit_left_3.png" type="Texture" id=104]
+[ext_resource path="res://ji_sit_right_4.png" type="Texture" id=105]
+[ext_resource path="res://ji_sit_left_4.png" type="Texture" id=106]
+[ext_resource path="res://ji_sit_left_5.png" type="Texture" id=107]
+[ext_resource path="res://ji_sit_right_8.png" type="Texture" id=108]
+[ext_resource path="res://ji_sit_left_7.png" type="Texture" id=109]
 
 [sub_resource type="SpriteFrames" id=6]
 animations = [ {
@@ -156,9 +167,19 @@ animations = [ {
 "name": "default",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 31 ), ExtResource( 30 ), ExtResource( 28 ), ExtResource( 26 ), ExtResource( 27 ), ExtResource( 24 ), ExtResource( 25 ), ExtResource( 32 ), ExtResource( 29 ) ],
+"frames": [ ExtResource( 100 ), ExtResource( 101 ), ExtResource( 2 ), ExtResource( 102 ) ],
 "loop": true,
-"name": "sit",
+"name": "dragonfly",
+"speed": 15.0
+}, {
+"frames": [ ExtResource( 31 ), ExtResource( 32 ), ExtResource( 104 ), ExtResource( 106 ), ExtResource( 107 ), ExtResource( 27 ), ExtResource( 109 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ) ],
+"loop": true,
+"name": "sit_left",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 24 ), ExtResource( 26 ), ExtResource( 25 ), ExtResource( 105 ), ExtResource( 103 ), ExtResource( 30 ), ExtResource( 29 ), ExtResource( 108 ), ExtResource( 108 ), ExtResource( 108 ), ExtResource( 108 ), ExtResource( 108 ), ExtResource( 108 ), ExtResource( 108 ), ExtResource( 108 ), ExtResource( 108 ), ExtResource( 108 ) ],
+"loop": true,
+"name": "sit_right",
 "speed": 5.0
 }, {
 "frames": [ ExtResource( 43 ) ],
@@ -237,7 +258,7 @@ animations = [ {
 "speed": 24.0
 }, {
 "frames": [ ExtResource( 44 ), ExtResource( 91 ), ExtResource( 93 ), ExtResource( 40 ), ExtResource( 75 ), ExtResource( 77 ), ExtResource( 95 ), ExtResource( 52 ) ],
-"loop": false,
+"loop": true,
 "name": "walk_right",
 "speed": 24.0
 } ]
@@ -254,8 +275,8 @@ script = ExtResource( 1 )
 position = Vector2( -1, -1 )
 rotation = 1.5708
 frames = SubResource( 6 )
-animation = "cloud_front_right"
-frame = 11
+animation = "walk_right"
+frame = 3
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -267,5 +288,4 @@ shape = SubResource( 9 )
 position = Vector2( 0, 40 )
 
 [connection signal="area_entered" from="." to="." method="_on_Ji_area_entered"]
-[connection signal="animation_finished" from="AnimatedSprite" to="." method="_on_AnimatedSprite_animation_finished"]
 [connection signal="tree_entered" from="BasicProjectile" to="." method="_on_BasicProjectile_tree_entered"]

@@ -34,7 +34,6 @@ texture = ExtResource( 8 )
 shape = SubResource( 5 )
 
 [node name="Board" type="Area2D" parent="World"]
-visible = false
 position = Vector2( -1, 0 )
 script = ExtResource( 1 )
 
@@ -65,4 +64,5 @@ position = Vector2( 446, 419 )
 [connection signal="tree_entered" from="World/Ji" to="." method="_on_Ji_tree_entered"]
 [connection signal="use_omni_gate" from="World/Ji" to="." method="_on_Ji_use_omni_gate"]
 [connection signal="timeout" from="Beats" to="." method="_on_Beats_timeout"]
+[connection signal="timeout" from="Beats" to="World/Board" method="_on_Beats_timeout"]
 [connection signal="timeout" from="Beats" to="World/Ji" method="_on_Beats_timeout"]

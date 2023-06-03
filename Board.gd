@@ -1,5 +1,7 @@
 extends Area2D
 
+var type = "B"
+
 # The length (in square units) of the (square) board.
 var n: int = 9
 
@@ -27,6 +29,8 @@ var cards_array_height: int = n
 
 # player position
 var pointer = Vector2(450, 450)
+
+onready var complete = false
 
 # Create the board
 func create_board():
@@ -65,8 +69,8 @@ func create_cards():
             # Instance our Card Scene to make a new Card
             var new_card = card_scene.instance()
 
-            # Make each card visible to start
-            new_card.visible = true
+            # Make each card invisible to start
+            new_card.visible = false
             
             # Position the new card in correct space on the board.
             new_card.position.x = x * unit_length - board_length / 2 + unit_length / 2
@@ -126,26 +130,34 @@ func on_value_changed(value):
         # Recreate the cards with the new size.
         create_cards()
 
-
 func _on_Ji_player_move(old_position, old_speed, old_direction, displacement):
+    if complete:
+        return
+        
     pointer += displacement
 
     if (-450 < pointer.x) && (pointer.x < 450) && (-450 < pointer.y) && (pointer.y < 450):
-        # leave previous card alone
-        #if card != null:
-            #card.visible = true
-
         var y_index = floor((pointer.y + 450) / unit_length);
         var x_index = floor((pointer.x + 450) / unit_length);
 
         var t = cards_array[y_index * cards_array_width + x_index]
         if card != t:
             card = t
-            print("(%s, %s)" % [x_index, y_index])
-            print(pointer)
-            
-            # toggle the new card
-            if card != null:
-                card.visible = ! card.visible
+            #do nothing
+            #print("(%s, %s)" % [x_index, y_index])
+            #print(pointer)
     else:
         card = null
+
+
+func _on_Beats_timeout():
+    if complete:
+        return
+
+    var visible = true
+    for card in cards_array:
+        if !card.visible:
+            visible = false
+            break
+    if visible:
+        complete = true

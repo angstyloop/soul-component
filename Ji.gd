@@ -35,6 +35,7 @@ var animation_prefix
 var exhale_counter
 const exhale_counter_max = 16
 var footstep_distance = 0
+var footstep_count = 0
 const footstep_distance_max = 10
 
 var dragonfly_mode
@@ -490,12 +491,14 @@ func _process(delta):
             footstep_distance -= displacement.length()
         else:
             var footsteps = Footsteps.instance()
+            footsteps.id = footstep_count
             #footsteps.angle = Vector2.RIGHT.angle_to(direction)
             footsteps.position = position + Vector2.DOWN * $CollisionShape2D.shape.radius
             footsteps.z_index = -1
             footsteps.get_node("Sprite").rotation = direction.angle()
             get_parent().add_child(footsteps)
             footstep_distance = footstep_distance_max
+            footstep_count += 1
     
     # hang onto the previous delta in case we need to use it to calculate stuff
     last_delta = delta

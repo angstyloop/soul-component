@@ -11,6 +11,7 @@ func _ready():
 func _on_Ji_player_move(old_position, old_speed, old_direction, displacement):
     #print("player_move in World")
     $World.position -= displacement
+
     
     if not moved_yet:
         moved_yet = true

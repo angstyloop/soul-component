@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Board.gd" type="Script" id=1]
 [ext_resource path="res://Ji.tscn" type="PackedScene" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://omni_base_background.png" type="Texture" id=4]
 [ext_resource path="res://Beats.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Trap.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Audio.tscn" type="PackedScene" id=7]
 
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 450, 450 )
@@ -40,8 +41,11 @@ position = Vector2( 446, 419 )
 
 [node name="Beats" parent="." instance=ExtResource( 5 )]
 
+[node name="Audio" parent="." instance=ExtResource( 7 )]
+
 [connection signal="player_move" from="World/Ji" to="." method="_on_Ji_player_move"]
 [connection signal="player_move" from="World/Ji" to="World/Board" method="_on_Ji_player_move"]
+[connection signal="ready_to_die" from="World/Ji" to="Audio" method="_on_Ji_ready_to_die"]
 [connection signal="tree_entered" from="World/Ji" to="." method="_on_Ji_tree_entered"]
 [connection signal="use_omni_gate" from="World/Ji" to="." method="_on_Ji_use_omni_gate"]
 [connection signal="timeout" from="Beats" to="." method="_on_Beats_timeout"]

@@ -621,6 +621,18 @@ func return_irla():
         add_child(new_irla)
 
 func _on_Beats_timeout():
+    if irla_hit:
+        if irla_hit_animation_count > 0:
+            irla_hit_animation_count -= 1
+        else:
+            if thrown_irla:
+                thrown_irla.queue_free()
+                get_parent().remove_child(thrown_irla)
+                thrown_irla = null
+            irla_hit = false
+            return_irla()
+
+    
     if knockback:
         if knockback_count > 0:
             knockback_count -= 1
@@ -685,8 +697,20 @@ func _on_BasicProjectile_tree_entered():
         held_irla.position = direction * 2 * get_node("CollisionShape2D").shape.radius
         held_irla.get_node("Sprite").texture = get_basic_projectile_texture(soul)
         first_run = false
+        
+var irla_hit = false
+var irla_hit_animation_count = 0
+var irla_hit_animation_count_max = 2
 
 func on_projectile_hit(projectile):
-    projectile.queue_free()
-    get_parent().remove_child(projectile)
-    return_irla()
+    print("projectile_hit") 
+    if irla_hit:
+        return
+    irla_hit = true
+    projectile.get_node("Sprite").visible = false
+    projectile.get_node("AnimatedSprite").visible = true
+    projectile.get_node("AnimatedSprite").stop()
+    projectile.get_node("AnimatedSprite").animation = "hit"
+    projectile.get_node("AnimatedSprite").frame = 0
+    projectile.get_node("AnimatedSprite").play()
+    irla_hit_animation_count = irla_hit_animation_count_max

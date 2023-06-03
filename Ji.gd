@@ -69,8 +69,7 @@ func _init():
     #position = Vector2(window_size[0] / 2, window_size[1] / 2)
     
     soul = [0, 0, 0, 0]    
-    speed = [0, 0, 0, 0]
-    
+    speed = 0
     direction = Vector2.RIGHT
     
     max_health = 10
@@ -155,62 +154,31 @@ func stand(_delta):
     
 func move(direction_index, delta):
     #print("move")
-    if direction_index < 4:
-        #print(direction_index)
-        #print(position)
-        if speed[direction_index] == 0:
-            speed[direction_index] = initial_speed
-        
-        speed[direction_index]  += initial_acceleration * exp(acceleration_growth * delta) * delta
-        
-        if speed[direction_index]  > speed_limit:
-            speed[direction_index]  = speed_limit
     
+    if speed == 0:
+        speed = initial_speed
+        
+    speed += initial_acceleration * exp(acceleration_growth * delta) * delta
+    
+    if speed > speed_limit:
+        speed = speed_limit
+    
+    if direction_index == 0:
+        direction = Vector2.UP
+    elif direction_index == 1:
+        direction = Vector2.RIGHT
+    elif direction_index == 2:
+        direction = Vector2.DOWN
+    elif direction_index == 3:
+        direction = Vector2.LEFT
     elif direction_index == 4:
-        # left and up
-        if speed[3] == 0 and speed[0] == 0:
-            var t = initial_speed / sqrt(2)
-            speed[3] = t
-            speed[0] = t
-        var t = initial_acceleration * exp(acceleration_growth * delta) * delta / sqrt(2)
-        speed[3] += t
-        speed[0] += t
-    # diagonals
-
+        direction = (Vector2.LEFT + Vector2.UP) / sqrt(2)
     elif direction_index == 5:
-        # up and right
-        if speed[0] == 0 and speed[1] == 0:
-            var t = initial_speed / sqrt(2)
-            speed[0] = t
-            speed[1] = t
-        var t = initial_acceleration * exp(acceleration_growth * delta) * delta / sqrt(2)
-        speed[0] += t
-        speed[1] += t
-
+        direction = (Vector2.RIGHT + Vector2.UP) / sqrt(2)
     elif direction_index == 6:
-        # right and down
-        if speed[1] == 0 and speed[2] == 0:
-            var t = initial_speed / sqrt(2)
-            speed[1] = t
-            speed[2] = t
-        var t = initial_acceleration * exp(acceleration_growth * delta) * delta / sqrt(2)
-        speed[1] += t
-        speed[2] += t
-        
+        direction = (Vector2.RIGHT + Vector2.DOWN) / sqrt(2)        
     elif direction_index == 7:
-        # down and left
-        if speed[2] == 0 and speed[3] == 0:
-            var t = initial_speed / sqrt(2)
-            speed[2] = t
-            speed[3] = t
-        var t = initial_acceleration * exp(acceleration_growth * delta) * delta / sqrt(2)
-        speed[2] += t
-        speed[3] += t
-    
-    var v = Vector2.UP * speed[0] + Vector2.RIGHT * speed[1] + Vector2.DOWN * speed[2] + Vector2.LEFT * speed[3]
-    
-    if v.length() > 0.0001:
-        direction = v / v.length()
+        direction = (Vector2.LEFT + Vector2.DOWN) / sqrt(2)
     
     if get_soul_component(soul, 3) == 4:
         animation_prefix = "cloud"
@@ -219,15 +187,10 @@ func move(direction_index, delta):
     else:
         animation_prefix = "walk"
         rotation = 0
-        
-    #if held_irla:
-        #held_irla.speed = [0, 0, 0, 0]
-        #held_irla.base_speed = 0
-        #held_irla.get_node("CollisionShape2D").disabled = true
-        #held_irla.position = direction * 2 * get_node("CollisionShape2D").shape.radius
-        #held_irla.get_node("Sprite").texture = get_basic_projectile_texture(soul)
+    
+    print(speed)
+    print(direction)
 
-    #print(direction)
 
 func get_basic_projectile_texture(soul):
     var soul_sorted = [soul[0], soul[1], soul[2], soul[3]]
@@ -251,7 +214,7 @@ func attack():
         thrown_irla.get_node("CollisionShape2D").disabled = false
         var radius = thrown_irla.get_node("CollisionShape2D").shape.radius
         thrown_irla.position = position + direction * 2 * (radius + get_node("CollisionShape2D").shape.radius)
-        thrown_irla.speed = [speed[0], speed[1], speed[2], speed[3]]
+        thrown_irla.speed = speed
         thrown_irla.get_node("Sprite").texture = get_basic_projectile_texture(soul)
         thrown_irla.soul = soul.duplicate()
         remove_child(thrown_irla)
@@ -312,7 +275,7 @@ func start_dragonfly():
     
 func end_dragonfly():
     direction = Vector2.UP.rotated(rotation)
-    speed = [0, 0, 0, 0]
+    speed = 0
     dragonfly_mode = false
     dragonfly_animation_started = false
     rotation = 90
@@ -417,23 +380,21 @@ func _process(delta):
         elif Input.is_action_pressed("ui_left"):
             move(3, delta)
     
-    for i in len(speed):
-        if speed[i] <= 0:
-            speed[i] = 0
-        elif speed[i] > stopping_speed:
-            speed[i] -= drag * speed[i] * delta   
-        else:
-            speed[i] -= drag * stopping_speed * delta
+    if speed <= 0:
+        speed = 0
+    elif speed > stopping_speed:
+        speed -= drag * speed * delta   
+    else:
+        speed -= drag * stopping_speed * delta
+
+    if speed < 0:
+        speed = 0
     
-        if speed[i] < 0:
-            speed[i] = 0
-    
-    var v = Vector2.UP * speed[0] + Vector2.RIGHT * speed[1] + Vector2.DOWN * speed[2] + Vector2.LEFT * speed[3]
-    var displacement = min(speed_limit, v.length()) * delta * direction
+    var displacement = min(speed_limit, speed) * delta * direction
     
     if displacement.length() > 0.00001:
         #print("player_move")
-        emit_signal("player_move", position, v, direction, displacement)
+        emit_signal("player_move", position, speed, direction, displacement)
         #print(position)
         position += displacement
 
@@ -445,7 +406,7 @@ func _process(delta):
     var sprite = get_node("AnimatedSprite")
     #print(angle)
     #print(animation_prefix)
-    if v.length() == 0:
+    if speed == 0:
         if (angle >= 0 && angle <= 90) || (angle >= -90 && angle < 0):
             sprite.play("sit_right")
         else:
@@ -609,7 +570,7 @@ func return_irla():
             thrown_irla = null
         var new_irla = BasicProjectile.instance()
         new_irla.z_index = 1
-        new_irla.speed = [0, 0, 0, 0]
+        new_irla.speed = 0
         new_irla.base_speed = 0
         new_irla.get_node("CollisionShape2D").disabled = true
         var radius = new_irla.get_node("CollisionShape2D").shape.radius
@@ -695,7 +656,7 @@ func _on_BasicProjectile_tree_entered():
         #print("first irla")
         held_irla = $BasicProjectile
         held_irla.held = true
-        held_irla.speed = [0, 0, 0, 0]
+        held_irla.speed = 0
         held_irla.base_speed = 0
         held_irla.get_node("CollisionShape2D").disabled = true
         held_irla.position = direction * 2 * get_node("CollisionShape2D").shape.radius

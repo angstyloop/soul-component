@@ -1,37 +1,62 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Board.gd" type="Script" id=1]
 [ext_resource path="res://Ji.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Omni.gd" type="Script" id=3]
 [ext_resource path="res://omni_base_background.png" type="Texture" id=4]
 [ext_resource path="res://Beats.tscn" type="PackedScene" id=5]
-
-[sub_resource type="RectangleShape2D" id=4]
+[ext_resource path="res://trap.png" type="Texture" id=6]
+[ext_resource path="res://Area2D.gd" type="Script" id=7]
 
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 450, 450 )
+
+[sub_resource type="RectangleShape2D" id=4]
+
+[sub_resource type="CircleShape2D" id=5]
+radius = 24.0208
+
+[sub_resource type="SpriteFrames" id=6]
+animations = [ {
+"frames": [ ExtResource( 6 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
 
 [node name="Omni" type="Node"]
 script = ExtResource( 3 )
 
 [node name="World" type="Area2D" parent="."]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="World"]
-shape = SubResource( 4 )
-
-[node name="Ji" parent="World" instance=ExtResource( 2 )]
-
 [node name="Board" type="Area2D" parent="World"]
+position = Vector2( -1, 0 )
 script = ExtResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/Board"]
 shape = SubResource( 3 )
 
 [node name="Sprite" type="Sprite" parent="World/Board"]
-position = Vector2( 0.49998, 0.499989 )
 scale = Vector2( 14.0781, 14.0781 )
 z_index = -1
 texture = ExtResource( 4 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World"]
+shape = SubResource( 4 )
+
+[node name="Ji" parent="World" instance=ExtResource( 2 )]
+position = Vector2( 446, 419 )
+
+[node name="Trap" type="Area2D" parent="."]
+position = Vector2( -744, -544 )
+script = ExtResource( 7 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Trap"]
+shape = SubResource( 5 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="Trap"]
+frames = SubResource( 6 )
+playing = true
 
 [node name="Beats" parent="." instance=ExtResource( 5 )]
 

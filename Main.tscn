@@ -119,7 +119,7 @@ shape = SubResource( 5 )
 scale = Vector2( 1.1, 1.1 )
 frames = SubResource( 7 )
 animation = "heal"
-frame = 2
+frame = 6
 playing = true
 
 [node name="Beats" parent="Arena" instance=ExtResource( 2 )]

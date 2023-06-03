@@ -39,10 +39,10 @@ func create_board():
     #$Sprite.scale.y = cards_array_height
 
     # Position the board 
-    global_position = Vector2(450, 450)
+    #global_position = Vector2(450, 450)
 
     # Position the Board's Sprite in the same place as the Board.
-    $Sprite.global_position = global_position
+    $Sprite.position = Vector2(0, 0)
 
     # Center the Board's sprite
     $Sprite.centered = true
@@ -65,12 +65,12 @@ func create_cards():
             # Instance our Card Scene to make a new Card
             var new_card = card_scene.instance()
 
-            # Make each card invisible
-            new_card.visible = false
+            # Make each card visible to start
+            new_card.visible = true
             
             # Position the new card in correct space on the board.
-            new_card.global_position.x = x * unit_length - board_length / 2 + unit_length / 2
-            new_card.global_position.y = y * unit_length - board_length / 2 + unit_length / 2
+            new_card.position.x = x * unit_length - board_length / 2 + unit_length / 2
+            new_card.position.y = y * unit_length - board_length / 2 + unit_length / 2
             
             # Set the "extents" on each Card's CardShape to 
             new_card.get_node("CardShape").shape.extents.x = unit_length / 2
@@ -89,10 +89,6 @@ func destroy_cards():
     cards_array.resize(0)
 
 func _ready():
-    # Set the @n SpinBox's default value
-    if $SpinBox != null:
-        $SpinBox.value = n
-
     # Create the board
     create_board()
 
@@ -106,7 +102,7 @@ func _process(_delta):
 var prev_value = null
 var curr_value = null
 
-func _on_SpinBox_value_changed(value):
+func on_value_changed(value):
     if (0 <= value && value <= 10):
         # Print stuff for debugging
         prev_value = curr_value
@@ -133,21 +129,20 @@ func _on_SpinBox_value_changed(value):
 
 func _on_Ji_player_move(old_position, old_speed, old_direction, displacement):
     pointer += displacement
-    
-    var gpos = global_position
 
-    if (0 <= pointer.x) && (pointer.x <= 900) && (0 <= pointer.y) && (pointer.y <= 900):
+    if (-450 < pointer.x) && (pointer.x < 450) && (-450 < pointer.y) && (pointer.y < 450):
         # leave previous card alone
         #if card != null:
             #card.visible = true
 
-        var y_index = floor(pointer.y / unit_length);
-        var x_index = floor(pointer.x / unit_length);
+        var y_index = floor((pointer.y + 450) / unit_length);
+        var x_index = floor((pointer.x + 450) / unit_length);
 
         var t = cards_array[y_index * cards_array_width + x_index]
         if card != t:
             card = t
             print("(%s, %s)" % [x_index, y_index])
+            print(pointer)
             
             # toggle the new card
             if card != null:

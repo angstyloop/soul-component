@@ -319,6 +319,15 @@ func _process(delta):
         return
     
     if !ready_to_die:
+        if knockback && knockback_velocity.length() > 0:
+            var displacement = knockback_velocity * delta
+            position += displacement
+            var knockback_direction = knockback_velocity / knockback_velocity.length()
+            knockback_velocity += drag * delta * knockback_direction
+            #if knockback_animation_started:
+                #rotation = Vector2.UP.angle_to(direction)
+            emit_signal("player_move", position, knockback_velocity.length(), knockback_direction, displacement)
+            return
         if dragonfly_mode:
             if Input.is_action_pressed("ui_accept"):
                 # toggle dragonfly off
@@ -470,7 +479,9 @@ func _process(delta):
     # hang onto the previous delta in case we need to use it to calculate stuff
     last_delta = delta
         
-func take_damage(hit_base_damage, hit_soul):
+func take_damage(hit_base_damage, hit_soul, hit_direction):
+    knockback(hit_soul, hit_direction)
+    
     if invincible:
         return
         
@@ -500,6 +511,21 @@ func take_damage(hit_base_damage, hit_soul):
     if health <= 0:
         queue_die()
 
+var knockback_count = 0
+var knockback_count_max = 4
+var knockback = false
+var knockback_animation_started = false
+var knockback_velocity = Vector2.ZERO
+
+func knockback(hit_soul, hit_direction):
+    var knockback_speed = 200 * (8 + get_soul_component(hit_soul, 0) + get_soul_component(hit_soul, 2) - 2 * get_soul_component(soul, 2))
+    if knockback_speed > 0:
+        knockback_velocity = knockback_speed * hit_direction
+    else:
+        # don't want this
+        knockback_velocity = Vector2.ZERO
+    knockback = true
+
 func queue_die():
     if ready_to_die:
         return
@@ -509,11 +535,7 @@ func queue_die():
     emit_signal("ready_to_die")
 
     get_node("CollisionShape2D").disabled = true
-    if speed[0] == 0 and speed[1] == 0 and speed[2] == 0 and speed[3] == 0:
-        direction = Vector2(-1, -1) / sqrt(2)
-    else:
-        direction = -direction
-    speed = [speed[2], speed[3], speed[0], speed[1]]
+
     drag = 12
     ready_to_die = true
     
@@ -521,7 +543,7 @@ func die():
     if health > 0:
         health = 0
         emit_signal("player_hit", 0, 1, max_health)
-    #print("game over")
+    print("game over")
     
     var perms = []
     var seen = {}
@@ -551,7 +573,7 @@ func die():
 func _on_Ji_area_entered(area):
     if "type" in area:
         if area.type == "b":
-            take_damage(area.base_damage, area.soul)
+            take_damage(area.base_damage, area.soul, area.position.direction_to(position))
             area.hit = true
 
 func return_irla():
@@ -579,6 +601,12 @@ func return_irla():
         add_child(new_irla)
 
 func _on_Beats_timeout():
+    if knockback:
+        if knockback_count > 0:
+            knockback_count -= 1
+        else:
+            knockback = false
+    
     if dragonfly_mode:
         var sprite = $AnimatedSprite
         if !dragonfly_animation_started:

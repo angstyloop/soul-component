@@ -40,8 +40,13 @@ func _process(delta):
     if held:
         var parent = get_parent()
         if parent and ("direction" in parent):
-            var radius = $CollisionShape2D.shape.radius
-            position = parent.direction * 2 * (radius + get_node("CollisionShape2D").shape.radius)
+            var radius = parent.get_node("CollisionShape2D").shape.radius
+            if "soul" in parent:
+                if parent.animation_prefix == "cloud":
+                    print("i am a cloud")
+                    position = - 3.4 * radius * parent.direction
+                else:
+                    position = parent.direction * 2 * (radius + $CollisionShape2D.shape.radius)
     else:
         #print(base_speed)
         #print(direction)

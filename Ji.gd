@@ -213,7 +213,8 @@ func move(direction_index, delta):
     
     if get_soul_component(soul, 3) == 4:
         animation_prefix = "cloud"
-        rotation = PI / 2 - direction.angle_to(directions[2])
+        $AnimatedSprite.rotation = PI / 2 - direction.angle_to(directions[2])
+        $CollisionShape2D.rotation = $AnimatedSprite.rotation
     else:
         animation_prefix = "walk"
         rotation = 0

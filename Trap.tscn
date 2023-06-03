@@ -1,0 +1,42 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Area2D.gd" type="Script" id=1]
+[ext_resource path="res://trap.png" type="Texture" id=2]
+[ext_resource path="res://Beats.tscn" type="PackedScene" id=3]
+
+[sub_resource type="CircleShape2D" id=5]
+radius = 24.0208
+
+[sub_resource type="SpriteFrames" id=6]
+animations = [ {
+"frames": [ ExtResource( 2 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 2 ) ],
+"loop": true,
+"name": "heal",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 2 ) ],
+"loop": true,
+"name": "hit",
+"speed": 5.0
+} ]
+
+[node name="Trap" type="Area2D"]
+position = Vector2( -744, -544 )
+script = ExtResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 5 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 6 )
+playing = true
+
+[node name="Beats" parent="." instance=ExtResource( 3 )]
+
+[connection signal="area_entered" from="." to="." method="_on_Trap_area_entered"]
+[connection signal="timeout" from="Beats" to="." method="_on_Beats_timeout"]

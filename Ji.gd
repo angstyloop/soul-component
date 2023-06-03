@@ -28,9 +28,12 @@ var fire_shield = null
 var fire_shield_counter
 var fire_shield_cooldown_counter
 var attack_cooldown_counter
+const attack_cooldown_counter_max = 4
 var ready_to_die
 var die_counter
 var animation_prefix
+var exhale_counter
+const exhale_counter_max = 16
 
 var type = "p"
 
@@ -42,6 +45,7 @@ const base_drag = 4
 const BasicProjectile = preload("res://BasicProjectile.tscn")
 const basic_projectiles = {"0_0_0_0": preload("res://basic_projectile_0_0_0_0.png"), "0_0_0_1": preload("res://basic_projectile_0_0_0_1.png"), "0_0_0_2": preload("res://basic_projectile_0_0_0_2.png"), "0_0_0_3": preload("res://basic_projectile_0_0_0_3.png"), "0_0_1_1": preload("res://basic_projectile_0_0_1_1.png"), "0_0_1_2": preload("res://basic_projectile_0_0_1_2.png"), "0_0_1_3": preload("res://basic_projectile_0_0_1_3.png"), "0_0_2_2": preload("res://basic_projectile_0_0_2_2.png"), "0_0_2_3": preload("res://basic_projectile_0_0_2_3.png"), "0_0_3_3": preload("res://basic_projectile_0_0_3_3.png"), "0_1_1_1": preload("res://basic_projectile_0_1_1_1.png"), "0_1_1_2": preload("res://basic_projectile_0_1_1_2.png"), "0_1_1_3": preload("res://basic_projectile_0_1_1_3.png"), "0_1_2_2": preload("res://basic_projectile_0_1_2_2.png"), "0_1_2_3": preload("res://basic_projectile_0_1_2_3.png"), "0_1_3_3": preload("res://basic_projectile_0_1_3_3.png"), "0_2_2_2": preload("res://basic_projectile_0_2_2_2.png"), "0_2_2_3": preload("res://basic_projectile_0_2_2_3.png"), "0_2_3_3": preload("res://basic_projectile_0_2_3_3.png"), "0_3_3_3": preload("res://basic_projectile_0_3_3_3.png"), "1_1_1_1": preload("res://basic_projectile_1_1_1_1.png"), "1_1_1_2": preload("res://basic_projectile_1_1_1_2.png"), "1_1_1_3": preload("res://basic_projectile_1_1_1_3.png"), "1_1_2_2": preload("res://basic_projectile_1_1_2_2.png"), "1_1_2_3": preload("res://basic_projectile_1_1_2_3.png"), "1_1_3_3": preload("res://basic_projectile_1_1_3_3.png"), "1_2_2_2": preload("res://basic_projectile_1_2_2_2.png"), "1_2_2_3": preload("res://basic_projectile_1_2_2_3.png"), "1_2_3_3": preload("res://basic_projectile_1_2_3_3.png"), "1_3_3_3": preload("res://basic_projectile_1_3_3_3.png"), "2_2_2_2": preload("res://basic_projectile_2_2_2_2.png"), "2_2_2_3": preload("res://basic_projectile_2_2_2_3.png"), "2_2_3_3": preload("res://basic_projectile_2_2_3_3.png"), "2_3_3_3": preload("res://basic_projectile_2_3_3_3.png"), "3_3_3_3": preload("res://basic_projectile_3_3_3_3.png")}
 const FireShield = preload("res://FireShield.tscn")
+const JiBreath = preload("res://JiBreath.tscn")
 
 signal soul_switch(soul)
 signal player_hit(new_health, damage)
@@ -70,6 +74,7 @@ func _init():
     attack_cooldown_counter = 0
     ready_to_die = false
     die_counter = 0
+    exhale_counter = 0
     
     last_delta = 100
     animation_prefix = "walk"
@@ -125,6 +130,7 @@ func soul_push_back(soul_index):
     soul[len_soul - 1] = soul_index
     emit_signal("soul_switch", soul)
     update_stats(soul)
+    print(soul)
     if held_irla:
         held_irla.get_node("Sprite").texture = get_basic_projectile_texture(soul)
 
@@ -215,11 +221,13 @@ func attack():
     #print("attack")
     #print("attack_cooldown_counter: %s" % attack_cooldown_counter)
     #print("held_irla null?: %s" % (held_irla == null))
-    if attack_cooldown_counter == 0 && held_irla:
+    if !held_irla:
+        return_irla()
+    elif attack_cooldown_counter == 0:
         thrown_irla = held_irla
         held_irla = null
         #print("attack")
-        attack_cooldown_counter = 4
+        attack_cooldown_counter = attack_cooldown_counter_max
         thrown_irla.held = false
         thrown_irla.base_speed = 2
         thrown_irla.direction = direction
@@ -365,8 +373,8 @@ func _process(delta):
     if displacement.length() > 0.00001:
         #print("player_move")
         emit_signal("player_move", position, v, direction, displacement)
-    
-    position += displacement
+        #print(position)
+        position += displacement
 
     if Input.is_action_just_pressed("ui_accept"):
         attack()
@@ -540,8 +548,20 @@ func _on_Beats_timeout():
     
     if attack_cooldown_counter > 0:
         attack_cooldown_counter -= 1
+    
+    if exhale_counter > 0:
+        exhale_counter -= 1
     else:
-        return_irla()
+        exhale()
+        exhale_counter = exhale_counter_max
+
+func exhale():
+    var breath = JiBreath.instance()
+    breath.direction = direction.rotated(PI/16)
+    breath.position = position + direction * $CollisionShape2D.shape.radius
+    breath.get_node("AnimatedSprite").play("default")
+    breath.z_index = 0
+    get_parent().add_child(breath)
 
 func _on_AnimatedSprite_animation_finished():
     #print("non-looping animation finished")
@@ -553,7 +573,7 @@ func _on_AnimatedSprite_animation_finished():
 
 func _on_BasicProjectile_tree_entered():
     if (first_run):
-        print("first irla")
+        #print("first irla")
         held_irla = $BasicProjectile
         held_irla.held = true
         held_irla.speed = [0, 0, 0, 0]

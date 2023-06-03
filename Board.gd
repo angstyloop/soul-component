@@ -25,9 +25,8 @@ var cards_array: Array = []
 var cards_array_width: int = n
 var cards_array_height: int = n
 
-# This holds our mouse position, which we don't use yet, but we keep track of
-# in our _input callback function.
-var mpos = Vector2(0, 0)
+# player position
+var pointer = Vector2(450, 450)
 
 # Create the board
 func create_board():
@@ -67,7 +66,7 @@ func create_cards():
             var new_card = card_scene.instance()
 
             # Make each card invisible
-            new_card.visible = false
+            new_card.visible = true
             
             # Position the new card in correct space on the board.
             new_card.global_position.x = x * unit_length - board_length / 2 + unit_length / 2
@@ -103,29 +102,6 @@ func _ready():
 func _process(_delta):
     pass
 
-func _input(ev):
-    if ev is InputEventMouseButton and ev.button_index == BUTTON_LEFT:
-        if ev.pressed:
-            var evpos = ev.global_position
-            
-            var gpos = global_position
-
-            if (gpos.x - board_length / 2 < evpos.x) && (evpos.x < gpos.x + board_length / 2) && (gpos.y - board_length / 2 < evpos.y) && (evpos.y < gpos.y + board_length / 2):
-                if card != null:
-                    card.visible = false
-
-                var y_index = floor((evpos.y - gpos.y + board_length / 2) / unit_length);
-                var x_index = floor((evpos.x - gpos.x + board_length / 2) / unit_length);
-
-                card = cards_array[y_index * cards_array_width + x_index]
-                
-                
-                if card != null:
-                    card.visible = true
-
-    if ev is InputEventMouseMotion or ev is InputEventMouseButton:
-        mpos = ev.global_position
-
 # Previous value
 var prev_value = null
 var curr_value = null
@@ -153,3 +129,27 @@ func _on_SpinBox_value_changed(value):
 
         # Recreate the cards with the new size.
         create_cards()
+
+
+func _on_Ji_player_move(old_position, old_speed, old_direction, displacement):
+    pointer += displacement
+    
+    var gpos = global_position
+
+    if (0 <= pointer.x) && (pointer.x <= 900) && (0 <= pointer.y) && (pointer.y <= 900):
+        # leave previous card alone
+        #if card != null:
+            #card.visible = true
+
+        var y_index = floor(pointer.y / unit_length);
+        var x_index = floor(pointer.x / unit_length);
+
+        var t = cards_array[y_index * cards_array_width + x_index]
+        if card != t:
+            card = t
+            print("(%s, %s)" % [x_index, y_index])
+            
+            # toggle the new card
+            if card != null:
+                card.visible = ! card.visible
+

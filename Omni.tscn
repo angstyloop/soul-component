@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Board.gd" type="Script" id=1]
 [ext_resource path="res://Ji.tscn" type="PackedScene" id=2]
@@ -7,6 +7,10 @@
 [ext_resource path="res://Beats.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Trap.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Audio.tscn" type="PackedScene" id=7]
+[ext_resource path="res://terrain_snow.png" type="Texture" id=8]
+
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 1000, 1000 )
 
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 450, 450 )
@@ -18,7 +22,19 @@ script = ExtResource( 3 )
 
 [node name="World" type="Area2D" parent="."]
 
+[node name="Ground" type="Area2D" parent="World"]
+position = Vector2( -1, 0 )
+scale = Vector2( 14.0781, 14.0781 )
+z_index = -2
+
+[node name="Sprite" type="Sprite" parent="World/Ground"]
+texture = ExtResource( 8 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Ground"]
+shape = SubResource( 5 )
+
 [node name="Board" type="Area2D" parent="World"]
+visible = false
 position = Vector2( -1, 0 )
 script = ExtResource( 1 )
 

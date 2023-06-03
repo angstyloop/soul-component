@@ -34,6 +34,8 @@ var die_counter
 var animation_prefix
 var exhale_counter
 const exhale_counter_max = 16
+var footstep_distance = 0
+const footstep_distance_max = 10
 
 var dragonfly_mode
 var dragonfly_animation_started
@@ -49,6 +51,7 @@ const BasicProjectile = preload("res://BasicProjectile.tscn")
 const basic_projectiles = {"0_0_0_0": preload("res://basic_projectile_0_0_0_0.png"), "0_0_0_1": preload("res://basic_projectile_0_0_0_1.png"), "0_0_0_2": preload("res://basic_projectile_0_0_0_2.png"), "0_0_0_3": preload("res://basic_projectile_0_0_0_3.png"), "0_0_1_1": preload("res://basic_projectile_0_0_1_1.png"), "0_0_1_2": preload("res://basic_projectile_0_0_1_2.png"), "0_0_1_3": preload("res://basic_projectile_0_0_1_3.png"), "0_0_2_2": preload("res://basic_projectile_0_0_2_2.png"), "0_0_2_3": preload("res://basic_projectile_0_0_2_3.png"), "0_0_3_3": preload("res://basic_projectile_0_0_3_3.png"), "0_1_1_1": preload("res://basic_projectile_0_1_1_1.png"), "0_1_1_2": preload("res://basic_projectile_0_1_1_2.png"), "0_1_1_3": preload("res://basic_projectile_0_1_1_3.png"), "0_1_2_2": preload("res://basic_projectile_0_1_2_2.png"), "0_1_2_3": preload("res://basic_projectile_0_1_2_3.png"), "0_1_3_3": preload("res://basic_projectile_0_1_3_3.png"), "0_2_2_2": preload("res://basic_projectile_0_2_2_2.png"), "0_2_2_3": preload("res://basic_projectile_0_2_2_3.png"), "0_2_3_3": preload("res://basic_projectile_0_2_3_3.png"), "0_3_3_3": preload("res://basic_projectile_0_3_3_3.png"), "1_1_1_1": preload("res://basic_projectile_1_1_1_1.png"), "1_1_1_2": preload("res://basic_projectile_1_1_1_2.png"), "1_1_1_3": preload("res://basic_projectile_1_1_1_3.png"), "1_1_2_2": preload("res://basic_projectile_1_1_2_2.png"), "1_1_2_3": preload("res://basic_projectile_1_1_2_3.png"), "1_1_3_3": preload("res://basic_projectile_1_1_3_3.png"), "1_2_2_2": preload("res://basic_projectile_1_2_2_2.png"), "1_2_2_3": preload("res://basic_projectile_1_2_2_3.png"), "1_2_3_3": preload("res://basic_projectile_1_2_3_3.png"), "1_3_3_3": preload("res://basic_projectile_1_3_3_3.png"), "2_2_2_2": preload("res://basic_projectile_2_2_2_2.png"), "2_2_2_3": preload("res://basic_projectile_2_2_2_3.png"), "2_2_3_3": preload("res://basic_projectile_2_2_3_3.png"), "2_3_3_3": preload("res://basic_projectile_2_3_3_3.png"), "3_3_3_3": preload("res://basic_projectile_3_3_3_3.png")}
 const FireShield = preload("res://FireShield.tscn")
 const JiBreath = preload("res://JiBreath.tscn")
+const Footsteps = preload("res://Footsteps.tscn")
 
 const dragonfly_speed = 4000
 
@@ -96,7 +99,12 @@ func update_stats(soul):
     initial_acceleration = get_initial_acceleration(soul)
     acceleration_growth = get_acceleration_growth(soul)
     stopping_speed = get_stopping_speed(soul)
-    
+
+# cloud ji doesn't leave footsteps. neither does dragonfly ji, but that's
+# already handled
+static func get_footsteps_on(soul):
+    return !(soul[0] == 3 && soul[1] == 3 && soul[2] == 3 && soul[3] == 3)
+
 static func get_soul_component(soul, i):
     var sum = 0
     for j in soul:
@@ -475,6 +483,18 @@ func _process(delta):
     
     if thrown_irla and thrown_irla.hit:
         on_projectile_hit(thrown_irla)
+    
+    if get_footsteps_on(soul):
+        if footstep_distance > 0:
+            footstep_distance -= displacement.length()
+        else:
+            var footsteps = Footsteps.instance()
+            #footsteps.angle = Vector2.RIGHT.angle_to(direction)
+            footsteps.position = position + Vector2.DOWN * $CollisionShape2D.shape.radius
+            footsteps.z_index = -1
+            footsteps.get_node("Sprite").rotation = direction.angle()
+            get_parent().add_child(footsteps)
+            footstep_distance = footstep_distance_max
     
     # hang onto the previous delta in case we need to use it to calculate stuff
     last_delta = delta

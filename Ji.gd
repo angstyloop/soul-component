@@ -77,7 +77,7 @@ func _init():
     speed = 0
     direction = Vector2.RIGHT
     
-    max_health = 10
+    max_health = 100
     health = max_health
     
     invincible = false
@@ -301,8 +301,8 @@ func _process(delta):
             position += displacement
             var knockback_direction = knockback_velocity / knockback_velocity.length()
             knockback_velocity += drag * delta * knockback_direction
-            #if knockback_animation_started:
-                #rotation = Vector2.UP.angle_to(direction)
+            if knockback_animation_started:
+                rotation = Vector2.DOWN.angle_to(direction)
             emit_signal("player_move", position, knockback_velocity.length(), knockback_direction, displacement)
             return
         if dragonfly_mode:
@@ -496,7 +496,6 @@ func take_damage(hit_base_damage, hit_soul, hit_direction):
     
     if health <= 0:
         queue_die()
-        
         
 var knockback_count = 0
 var knockback_count_max = 4

@@ -1,4 +1,4 @@
-[gd_scene load_steps=112 format=2]
+[gd_scene load_steps=120 format=2]
 
 [ext_resource path="res://Ji.gd" type="Script" id=1]
 [ext_resource path="res://dragonfly_3.png" type="Texture" id=2]
@@ -109,6 +109,14 @@
 [ext_resource path="res://ji_sit_left_5.png" type="Texture" id=107]
 [ext_resource path="res://ji_sit_right_8.png" type="Texture" id=108]
 [ext_resource path="res://ji_sit_left_7.png" type="Texture" id=109]
+[ext_resource path="res://ji_knockback_8.png" type="Texture" id=110]
+[ext_resource path="res://ji_knockback_2.png" type="Texture" id=111]
+[ext_resource path="res://ji_knockback_5.png" type="Texture" id=112]
+[ext_resource path="res://ji_knockback_7.png" type="Texture" id=113]
+[ext_resource path="res://ji_knockback_4.png" type="Texture" id=114]
+[ext_resource path="res://ji_knockback_1.png" type="Texture" id=115]
+[ext_resource path="res://ji_knockback_6.png" type="Texture" id=116]
+[ext_resource path="res://ji_knockback_3.png" type="Texture" id=117]
 
 [sub_resource type="SpriteFrames" id=6]
 animations = [ {
@@ -172,10 +180,10 @@ animations = [ {
 "name": "dragonfly",
 "speed": 15.0
 }, {
-"frames": [ ExtResource( 3 ), ExtResource( 7 ), ExtResource( 6 ) ],
+"frames": [ ExtResource( 115 ), ExtResource( 111 ), ExtResource( 117 ), ExtResource( 114 ), ExtResource( 112 ), ExtResource( 116 ), ExtResource( 113 ), ExtResource( 110 ) ],
 "loop": true,
 "name": "knockback",
-"speed": 5.0
+"speed": 40.0
 }, {
 "frames": [ ExtResource( 31 ), ExtResource( 32 ), ExtResource( 104 ), ExtResource( 106 ), ExtResource( 107 ), ExtResource( 27 ), ExtResource( 109 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ) ],
 "loop": true,
@@ -280,7 +288,7 @@ position = Vector2( -1, -1 )
 rotation = 1.5708
 frames = SubResource( 6 )
 animation = "knockback"
-frame = 1
+frame = 5
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

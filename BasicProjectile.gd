@@ -3,6 +3,7 @@ extends Area2D
 var direction
 var speed
 var angular_speed
+var ignore_invincible = false
 
 var base_speed
 var type = "b"
@@ -21,10 +22,10 @@ static func get_soul_component(soul, i):
             sum += 1
     return sum
 
-func get_base_damage(soul):
+static func get_base_damage(soul):
     return 1 + floor(.5 * get_soul_component(soul, 0)) - floor(.5 * get_soul_component(soul, 1))
     
-func get_base_speed(soul):
+static func get_base_speed(soul):
     return 100 + 50 * max(0, (get_soul_component(soul, 1) + get_soul_component(soul, 3) - get_soul_component(soul, 2)))
 
 func _init():
@@ -62,12 +63,5 @@ func _process(delta):
                 else:
                     position = parent.direction * 2 * (radius + $CollisionShape2D.shape.radius)
     else:
-        #print(base_speed)
-        #print(direction)
-        #print(speed)
-        #print(delta)
-        print(speed)
-        print(base_speed)
-        print(direction)
         position += (base_speed + speed) * direction * delta
     rotation += angular_speed * delta

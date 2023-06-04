@@ -14,6 +14,11 @@ var acceleration_growth
 var drag
 var stopping_speed
 
+var ignore_invincible = false
+
+var footsteps_on = true
+var breath_on = true
+
 var thrown_irla = null
 var held_irla = null
 
@@ -145,7 +150,7 @@ func soul_push_back(soul_index):
     soul[len_soul - 1] = soul_index
     emit_signal("soul_switch", soul)
     update_stats(soul)
-    print(soul)
+    #print(soul)
     if held_irla:
         held_irla.get_node("Sprite").texture = get_basic_projectile_texture(soul)
 
@@ -257,7 +262,7 @@ func use_soul_special():
     soul_sorted.sort()
     var soul_string = "{0}_{1}_{2}_{3}".format(soul_sorted)
     #print("soul_string")
-    print(soul_string)
+    #print(soul_string)
     if soul_string == "0_0_0_0":
         use_fire_shield()
     elif soul_string == "0_1_2_3":
@@ -446,7 +451,7 @@ func _process(delta):
     if thrown_irla and thrown_irla.hit:
         on_projectile_hit(thrown_irla)
     
-    if get_footsteps_on(soul):
+    if footsteps_on && get_footsteps_on(soul):
         if footstep_distance > 0:
             footstep_distance -= displacement.length()
         else:
@@ -464,9 +469,6 @@ func _process(delta):
     last_delta = delta
         
 func take_damage(hit_base_damage, hit_soul, hit_direction):    
-    if invincible:
-        return
-    
     knockback(hit_soul, hit_direction)
         
     var damage = hit_base_damage
@@ -556,7 +558,10 @@ func die():
 
 func _on_Ji_area_entered(area):
     if "type" in area:
-        if area.type == "b":
+        if area.type != "p" && area.type != "f":
+            if invincible && !area.ignore_invincible:
+                return
+            # not own projectile a marker => take damage
             take_damage(area.base_damage, area.soul, area.position.direction_to(position))
             area.hit = true
 
@@ -627,11 +632,12 @@ func _on_Beats_timeout():
     if attack_cooldown_counter > 0:
         attack_cooldown_counter -= 1
     
-    if exhale_counter > 0:
-        exhale_counter -= 1
-    else:
-        exhale()
-        exhale_counter = exhale_counter_max
+    if breath_on:
+        if exhale_counter > 0:
+            exhale_counter -= 1
+        else:
+            exhale()
+            exhale_counter = exhale_counter_max
 
 func exhale():
     var breath = JiBreath.instance()
@@ -652,6 +658,7 @@ func _on_AnimatedSprite_animation_finished():
 
 func _on_BasicProjectile_tree_entered():
     if (first_run):
+        # prepare the first held irla, our companion and projectile
         #print("first irla")
         held_irla = $BasicProjectile
         held_irla.held = true
@@ -662,12 +669,21 @@ func _on_BasicProjectile_tree_entered():
         held_irla.get_node("Sprite").texture = get_basic_projectile_texture(soul)
         first_run = false
         
+        # check the location, and disable/enable footsteps, breath, etc
+        footsteps_on = false
+        breath_on = false
+        if get_parent().get_parent().get_node("Omni"):
+            # footsteps and breath are on in the "Omni", but not in "Arena"
+            footsteps_on = true
+            breath_on = true
+        
+        
 var irla_hit = false
 var irla_hit_animation_count = 0
 var irla_hit_animation_count_max = 2
 
 func on_projectile_hit(projectile):
-    print("projectile_hit") 
+    #print("projectile_hit") 
     if irla_hit:
         return
     irla_hit = true

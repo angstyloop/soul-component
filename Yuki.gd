@@ -9,6 +9,13 @@ var beat_counter
 var beat_array
 var spin_speed
 var omni_gate_used
+var soul
+var radius
+var projectile_radius
+var ignore_invincible = true
+
+# not used yet
+var animation_prefix = ""
 
 enum {START_MOVE_TO_PLAYER,  STOP_MOVE_TO_PLAYER, ATTACK_PLAYER, START_SPINNING, STOP_SPINNING}
 
@@ -20,124 +27,126 @@ func _init():
     #position = Vector2(size[0] / 2, size[1] / 2)
     omni_gate_used = false
     damage_key = [1, -1, -1, -1]
-    health = 10
+    soul = [1, 3, 3, 3]
+    health = 20
     speed = 0
     spin_speed = 0
+    projectile_radius = 24
     direction = Vector2.ZERO
-    base_projectile_speed = 50
     beat_counter = 0
     beat_array = [
-        [START_MOVE_TO_PLAYER], [], [], [],
-        [STOP_MOVE_TO_PLAYER], [], [], [],
-        [START_MOVE_TO_PLAYER], [], [], [],
-        [STOP_MOVE_TO_PLAYER], [], [], [],
+        [ATTACK_PLAYER], [], [], [],
+        [], [], [], [],
+        [], [], [], [],
+        [], [], [], [],
         
         [START_MOVE_TO_PLAYER], [], [], [],
-        [STOP_MOVE_TO_PLAYER], [], [], [],
+        [], [], [], [],
+        [], [], [], [],
+        [], [], [], [STOP_MOVE_TO_PLAYER],
+        
+        [ATTACK_PLAYER, START_MOVE_TO_PLAYER], [], [], [],
+        [], [], [], [],
+        [], [], [], [],
+        [], [], [], [STOP_MOVE_TO_PLAYER],
+        
+        [START_MOVE_TO_PLAYER], [STOP_MOVE_TO_PLAYER], [], [],
+        [], [], [], [],
+        [], [], [], [],
+        [], [], [], [],
+        
+        [START_MOVE_TO_PLAYER], [STOP_MOVE_TO_PLAYER], [], [],
+        [], [], [], [],
+        [], [], [], [],
+        [], [], [], [],
+        
+        [START_MOVE_TO_PLAYER], [STOP_MOVE_TO_PLAYER], [], [],
+        [], [], [], [],
+        [], [], [],
+
+        
+        [START_MOVE_TO_PLAYER], [STOP_MOVE_TO_PLAYER], [], [ATTACK_PLAYER],
+        [], [], [ATTACK_PLAYER], [],
+        [], [], [], [],
+        [], [], [], [],
+        
+        [START_MOVE_TO_PLAYER], [STOP_MOVE_TO_PLAYER], [], [ATTACK_PLAYER],
+        [], [], [ATTACK_PLAYER], [],
+        [], [], [], [],
+        [], [], [], [],
+        
+        [START_MOVE_TO_PLAYER], [STOP_MOVE_TO_PLAYER], [], [ATTACK_PLAYER],
+        [], [], [ATTACK_PLAYER], [],
+        [], [], [], [],
+        [], [], [], [],
+        
         [START_MOVE_TO_PLAYER], [], [], [],
+        [], [], [], [],
+        [], [], [], [],
         [STOP_MOVE_TO_PLAYER], [], [], [],
         
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [STOP_MOVE_TO_PLAYER], [], [ATTACK_PLAYER],
+        [], [], [ATTACK_PLAYER], [],
+        [], [], [], [],
+        [], [], [], [],
         
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [STOP_MOVE_TO_PLAYER], [], [ATTACK_PLAYER],
+        [], [], [ATTACK_PLAYER], [],
+        [], [], [], [],
+        [], [], [], [],
         
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [STOP_MOVE_TO_PLAYER], [], [ATTACK_PLAYER],
+        [], [], [ATTACK_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [STOP_MOVE_TO_PLAYER], [], [],
+        [], [], [], [],
         
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [],
-        
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
-        
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
-        
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
-        
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
-        
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
-        
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
-        
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
-        
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
-        [START_MOVE_TO_PLAYER], [], [STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER], [], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [],
+        [START_MOVE_TO_PLAYER], [STOP_MOVE_TO_PLAYER], [], [ATTACK_PLAYER],
+        [], [], [ATTACK_PLAYER], [],
+        [], [], [], [],
+        [], [], [], [],
         
         #
         
-        [ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER],
-        [ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER],
-        [ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER],
-        [ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER],
+        [ATTACK_PLAYER], [], [ATTACK_PLAYER], [],
+        [ATTACK_PLAYER], [], [ATTACK_PLAYER], [],
+        [], [], [], [],
+        [], [], [], [],
         
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [ATTACK_PLAYER], [], [START_MOVE_TO_PLAYER], [STOP_MOVE_TO_PLAYER],
+        [ATTACK_PLAYER], [], [START_MOVE_TO_PLAYER], [STOP_MOVE_TO_PLAYER],
+        [], [], [START_MOVE_TO_PLAYER], [STOP_MOVE_TO_PLAYER],
+        [], [], [START_MOVE_TO_PLAYER], [STOP_MOVE_TO_PLAYER],
+
         
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [], [ATTACK_PLAYER], [],
+        [STOP_MOVE_TO_PLAYER, ATTACK_PLAYER], [], [ATTACK_PLAYER], [],
+        [], [], [], [],
+        [], [], [], [],
         
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [ATTACK_PLAYER], [ATTACK_PLAYER, STOP_MOVE_TO_PLAYER], [ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [], [ATTACK_PLAYER], [],
+        [STOP_MOVE_TO_PLAYER, ATTACK_PLAYER], [], [ATTACK_PLAYER], [],
+        [], [], [], [],
+        [], [], [], [],
         
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [] , [ATTACK_PLAYER], [],
+        [STOP_MOVE_TO_PLAYER, ATTACK_PLAYER], [], [ATTACK_PLAYER], [],
+        [], [], [], [],
+        [], [], [], [],
         
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [], [START_MOVE_TO_PLAYER], [],
+        [STOP_MOVE_TO_PLAYER, ATTACK_PLAYER], [], [START_MOVE_TO_PLAYER], [],
+        [], [], [], [],
+        [], [], [], [],
         
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
+        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [], [START_MOVE_TO_PLAYER], [],
+        [STOP_MOVE_TO_PLAYER, ATTACK_PLAYER], [], [START_MOVE_TO_PLAYER], [],
+        [], [], [], [],
+        [], [], [], [],
   
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
-        [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER], [START_MOVE_TO_PLAYER, ATTACK_PLAYER],
+        [], [], [], [],
+        [], [], [], [],
+        [], [], [], [],
+        [], [], [], [],
         
         [START_SPINNING], [], [], [],
         [], [], [], [],
@@ -172,11 +181,50 @@ func do_actions(player):
         audio.play(0)
     else:
         beat_counter += 1
-  
-func take_damage(soul):
-    var damage = 0
-    for i in 4:
-        damage += damage_key[soul[i]]
+
+static func get_soul_component(soul, i):
+    var sum = 0
+    for j in soul:
+        if j == i:
+            sum += 1
+    return sum
+
+static func get_base_damage(soul):
+    return 1 + floor(.5 * get_soul_component(soul, 0)) - floor(.5 * get_soul_component(soul, 1))
+
+static func get_damage(own_soul, hit_soul):
+    var damage = get_base_damage(hit_soul)
+    for i in hit_soul:
+        if i == 3:
+            pass
+        else:
+            var weakness
+            if i == 0:
+                weakness = 2
+            else:
+                weakness = i - 1
+                
+            for j in own_soul:
+                if j == weakness:
+                    damage += 1
+    return damage
+
+func take_damage(hit_soul):
+    var damage = get_base_damage(hit_soul)
+    for i in hit_soul:
+        if i == 3:
+            pass
+        else:
+            var weakness
+            if i == 0:
+                weakness = 2
+            else:
+                weakness = i - 1
+                
+            for j in soul:
+                if j == weakness:
+                    damage += 1
+                    
     if damage > 0:
         get_node("AnimatedSprite").play("hit")
     elif damage < 0:
@@ -187,26 +235,29 @@ func take_damage(soul):
     health -= damage
     #print("hit by soul: {} {} {} {}".format([soul[0], soul[1], soul[2], soul[3]]))
     #print("took damage: %s" % damage)
-    #print("health remaining: %s" % health)
+    print("health remaining: %s" % health)
     if health <= 0:
         queue_free()
 
-var air_shield_threshold_speed = 300
+var air_shield_threshold_speed = 100
 
 func dodge():
     get_node("AnimatedSprite").play("dodge")
 
+static func get_speed_limit(soul):
+    return 200 * (1 + get_soul_component(soul, 3))
+
 func _on_Yuki_area_entered(area):
     if "type" in area:
         if area.type == "b":
-            var proj_speed = (area.base_speed * area.direction + Vector2.UP * area.speed[0] + Vector2.RIGHT * area.speed[1] + Vector2.DOWN * area.speed[2] + Vector2.LEFT * area.speed[3]).length()
+            var proj_speed = speed
             if proj_speed  > air_shield_threshold_speed:
                 # hit by fast projectile
                 take_damage(area.soul)
                 area.hit = true
             else:
                 # freeze slow projectile
-                #area.speed = [0, 0, 0, 0]
+                #area.speed = 0
                 #area.angular_speed = 0
                 #area.direction = Vector2.ZERO
                 
@@ -214,9 +265,11 @@ func _on_Yuki_area_entered(area):
                 dodge()
                 
         elif area.type == "p":
-            # ensnare slow player
-            if ! area.invincible:
-                area.queue_die()
+            area.queue_die()
+        
+        elif area.type == "y":
+            # own projectile
+            pass
 
 func _on_Yuki_area_exited(area):
     if "drag" in area:
@@ -232,13 +285,11 @@ func attack_player(player):
     var target_pos = Vector2(pos[0], pos[1])
     var proj = YukiProjectile.instance()
     proj.direction = position.direction_to(target_pos)
-    var ice_spikes_radius = 24
-    proj.position = position + 2.5 * ice_spikes_radius * proj.direction
-    proj.speed = [0, 0, 0, 0]
-    proj.base_speed = base_projectile_speed
-    proj.soul = [2, 2, 2, 2]
-    proj.base_damage = INF
-    proj.get_node("CollisionShape2D").shape.radius = ice_spikes_radius
+    if !radius:
+        radius = $CollisionShape2D.shape.radius
+    proj.position = position
+    proj.speed = speed
+    proj.get_node("CollisionShape2D").shape.radius = projectile_radius
     proj.get_node("Sprite").texture = projectile_texture
     get_parent().add_child(proj)
     
@@ -247,7 +298,7 @@ func start_move_to_player(player):
         if spin_speed == 0:
             start_spinning()
         return
-    speed = 300
+    speed = get_speed_limit(soul)
     direction = position.direction_to(player.position)
 
 func stop_move_to_player(_player):

@@ -5,6 +5,7 @@ var base_damage = 1
 var soul = [0, 0, 0, 0]
 var hit = false
 var health = 10
+var ignore_invincible = false
 
 var knockback_count = 0
 var knockback_count_max = 4

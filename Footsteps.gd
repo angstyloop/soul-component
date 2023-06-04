@@ -8,5 +8,5 @@ func _on_Footsteps_area_entered(area):
         var older = self
         if area.id < id:
             older = area
-        older.get_parent().remove_child(older)
+        older.id = -1
         older.queue_free()

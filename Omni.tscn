@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Board.gd" type="Script" id=1]
 [ext_resource path="res://Ji.tscn" type="PackedScene" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://Trap.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Audio.tscn" type="PackedScene" id=7]
 [ext_resource path="res://terrain_snow.png" type="Texture" id=8]
+[ext_resource path="res://World.gd" type="Script" id=9]
 
 [sub_resource type="RectangleShape2D" id=5]
 extents = Vector2( 1000, 1000 )
@@ -21,6 +22,7 @@ extents = Vector2( 450, 450 )
 script = ExtResource( 3 )
 
 [node name="World" type="Area2D" parent="."]
+script = ExtResource( 9 )
 
 [node name="Ground" type="Area2D" parent="World"]
 position = Vector2( -14121, -14074 )

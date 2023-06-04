@@ -1,6 +1,7 @@
 extends Node
 
 var moved_yet = false
+var snow = true
 
 const JiBreath = preload("res://JiBreath.tscn")
 

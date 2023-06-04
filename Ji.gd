@@ -496,7 +496,8 @@ func take_damage(hit_base_damage, hit_soul, hit_direction):
     
     if health <= 0:
         queue_die()
-
+        
+        
 var knockback_count = 0
 var knockback_count_max = 4
 var knockback = false
@@ -510,6 +511,7 @@ func knockback(hit_soul, hit_direction):
     else:
         # don't want this
         knockback_velocity = Vector2.ZERO
+    knockback_count = knockback_count_max
     knockback = true
 
 func queue_die():
@@ -558,7 +560,7 @@ func die():
 
 func _on_Ji_area_entered(area):
     if "type" in area:
-        if area.type != "p" && area.type != "f":
+        if area.type != "p" && area.type != "f" && area.type != "B":
             if invincible && !area.ignore_invincible:
                 return
             # not own projectile a marker => take damage
@@ -603,10 +605,20 @@ func _on_Beats_timeout():
 
     
     if knockback:
+        var sprite = $AnimatedSprite
+        if !knockback_animation_started:
+            sprite.stop()
+            sprite.animation = "knockback"
+            sprite.frame = 0
+            sprite.play()
+            knockback_animation_started = true
+            
         if knockback_count > 0:
             knockback_count -= 1
+            
         else:
             knockback = false
+            knockback_animation_started = false
     
     if dragonfly_mode:
         var sprite = $AnimatedSprite
@@ -655,6 +667,7 @@ func _on_AnimatedSprite_animation_finished():
     #    animated_sprite.animation = "default"
     #    animated_sprite.play()
 
+var parent
 
 func _on_BasicProjectile_tree_entered():
     if (first_run):
@@ -672,7 +685,11 @@ func _on_BasicProjectile_tree_entered():
         # check the location, and disable/enable footsteps, breath, etc
         footsteps_on = false
         breath_on = false
-        if get_parent().get_parent().get_node("Omni"):
+        
+        if !parent:
+            parent = get_parent()
+            
+        if ("snow" in parent) && parent.snow:
             # footsteps and breath are on in the "Omni", but not in "Arena"
             footsteps_on = true
             breath_on = true

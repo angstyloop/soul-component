@@ -172,6 +172,11 @@ animations = [ {
 "name": "dragonfly",
 "speed": 15.0
 }, {
+"frames": [ ExtResource( 3 ), ExtResource( 7 ), ExtResource( 6 ) ],
+"loop": true,
+"name": "knockback",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 31 ), ExtResource( 32 ), ExtResource( 104 ), ExtResource( 106 ), ExtResource( 107 ), ExtResource( 27 ), ExtResource( 109 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ), ExtResource( 28 ) ],
 "loop": true,
 "name": "sit_left",
@@ -274,7 +279,8 @@ script = ExtResource( 1 )
 position = Vector2( -1, -1 )
 rotation = 1.5708
 frames = SubResource( 6 )
-animation = "cloud_left"
+animation = "knockback"
+frame = 1
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

@@ -53,10 +53,10 @@ texture = ExtResource( 4 )
 shape = SubResource( 4 )
 
 [node name="Trap" parent="World" instance=ExtResource( 6 )]
-position = Vector2( 0, 0 )
+position = Vector2( -3000, -3000 )
 
 [node name="Ji" parent="World" instance=ExtResource( 2 )]
-position = Vector2( 11277, 11862 )
+position = Vector2( 450, 450 )
 
 [node name="Beats" parent="." instance=ExtResource( 5 )]
 

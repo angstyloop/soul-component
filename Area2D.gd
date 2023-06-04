@@ -33,6 +33,10 @@ func knockback(hit_soul, hit_direction):
         knockback_velocity = Vector2.ZERO
     knockback_count = knockback_count_max
     knockback = true
+    var t = min(int(abs(health)) / int(10), 10)
+    scale = Vector2(t, t)
+    $AnimatedSprite.scale = Vector2(t, t)
+    $CollisionShape2D.scale = Vector2(t, t)
     $AnimatedSprite.stop()
     $AnimatedSprite.animation = "hit"
     $AnimatedSprite.frame = 0
@@ -139,8 +143,8 @@ func die():
 
 func heal(damage):
     var t
-    print("damage: %s" % damage)
-    print("health: %s" % health)
+    #print("damage: %s" % damage)
+    #print("health: %s" % health)
     t = min(int(abs(health)) / int(10), 10)
     scale = Vector2(t, t)
     $AnimatedSprite.scale = Vector2(t, t)

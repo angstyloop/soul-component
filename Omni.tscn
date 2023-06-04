@@ -23,18 +23,20 @@ script = ExtResource( 3 )
 [node name="World" type="Area2D" parent="."]
 
 [node name="Ground" type="Area2D" parent="World"]
-position = Vector2( -1, 0 )
+position = Vector2( -14121, -14074 )
 scale = Vector2( 14.0781, 14.0781 )
 z_index = -2
 
 [node name="Sprite" type="Sprite" parent="World/Ground"]
+position = Vector2( 999.567, 1000.77 )
 texture = ExtResource( 8 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/Ground"]
+position = Vector2( 1001.91, 998.146 )
 shape = SubResource( 5 )
 
 [node name="Board" type="Area2D" parent="World"]
-position = Vector2( -1, 0 )
+position = Vector2( 454, 455 )
 script = ExtResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/Board"]
@@ -49,14 +51,15 @@ texture = ExtResource( 4 )
 shape = SubResource( 4 )
 
 [node name="Trap" parent="World" instance=ExtResource( 6 )]
-position = Vector2( 522, 424 )
+position = Vector2( -11794, -12320 )
 
 [node name="Ji" parent="World" instance=ExtResource( 2 )]
-position = Vector2( 446, 419 )
+position = Vector2( 11277, 11862 )
 
 [node name="Beats" parent="." instance=ExtResource( 5 )]
 
 [node name="Audio" parent="." instance=ExtResource( 7 )]
+position = Vector2( -928, 989 )
 
 [connection signal="player_move" from="World/Ji" to="." method="_on_Ji_player_move"]
 [connection signal="player_move" from="World/Ji" to="World/Board" method="_on_Ji_player_move"]

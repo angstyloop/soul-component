@@ -17,7 +17,7 @@ var hit = false
 func _init():
     direction = Vector2.ZERO
     base_speed = 2
-    speed = [0, 0, 0, 0]
+    speed = 0
     position = Vector2.ZERO
     angular_speed = 10
     soul = [0, 1, 2, 3]
@@ -47,5 +47,5 @@ func _process(delta):
         #print(direction)
         #print(speed)
         #print(delta)
-        position += base_speed * direction + (Vector2.UP * speed[0] + Vector2.RIGHT * speed[1] + Vector2.DOWN * speed[2] + Vector2.LEFT * speed[3]) * delta
+        position += (base_speed + speed) * direction * delta
     rotation += angular_speed * delta

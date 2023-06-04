@@ -188,8 +188,8 @@ func move(direction_index, delta):
         animation_prefix = "walk"
         rotation = 0
     
-    print(speed)
-    print(direction)
+    #print(speed)
+    #print(direction)
 
 
 func get_basic_projectile_texture(soul):
@@ -209,7 +209,6 @@ func attack():
         #print("attack")
         attack_cooldown_counter = attack_cooldown_counter_max
         thrown_irla.held = false
-        thrown_irla.base_speed = 2
         thrown_irla.direction = direction
         thrown_irla.get_node("CollisionShape2D").disabled = false
         var radius = thrown_irla.get_node("CollisionShape2D").shape.radius
@@ -464,11 +463,11 @@ func _process(delta):
     # hang onto the previous delta in case we need to use it to calculate stuff
     last_delta = delta
         
-func take_damage(hit_base_damage, hit_soul, hit_direction):
-    knockback(hit_soul, hit_direction)
-    
+func take_damage(hit_base_damage, hit_soul, hit_direction):    
     if invincible:
         return
+    
+    knockback(hit_soul, hit_direction)
         
     var damage = hit_base_damage
     for i in hit_soul:

@@ -38,6 +38,7 @@ position = Vector2( 999.567, 1000.77 )
 texture = ExtResource( 8 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/Ground"]
+visible = false
 position = Vector2( 1000, 1000 )
 shape = SubResource( 5 )
 
@@ -78,6 +79,23 @@ position = Vector2( 860, 36 )
 
 [node name="Soul" parent="." instance=ExtResource( 11 )]
 position = Vector2( 730, 35 )
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+visible = false
+modulate = Color( 0, 0, 0, 1 )
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 510.0
+margin_bottom = 510.0
+visible_characters = 100
+percent_visible = 1.42857
+text = "Tricky Tiles
+Frigid Fight
+Sharp Shooter
+Perilous Prize
+Diligent Dragonfly 
+"
+scroll_active = false
 
 [connection signal="player_hit" from="World/Ji" to="Health" method="_on_Ji_player_hit"]
 [connection signal="player_move" from="World/Ji" to="." method="_on_Ji_player_move"]

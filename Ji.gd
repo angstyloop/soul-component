@@ -304,7 +304,7 @@ func end_dragonfly():
     speed = 0
     dragonfly_mode = false
     dragonfly_animation_started = false
-    rotation = 90
+    rotation = 0
     # play end_dragonfly animation
 
 func use_dragonfly():

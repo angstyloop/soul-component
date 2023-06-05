@@ -66,10 +66,12 @@ func _process(delta):
     if !held:
         var displacement = (base_speed + speed) * direction * delta
         position += displacement
+        var radius = scale.x * parent.projectile_radius 
+        if radius > 500000:
+            queue_free()
         var scale_delta = displacement.length() * radius / 1000
         scale.x += delta
         scale.y += delta
-        radius *= scale.x
         var speed_delta = - (1 - .5 / scale_delta)
         speed = max(.5, speed + speed_delta)
         

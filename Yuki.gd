@@ -14,6 +14,11 @@ var radius
 var projectile_radius
 var ignore_invincible = true
 
+var ice = false
+var ice_count = 0
+var ice_count_max = 2
+var ice_animation_started = false
+
 # not used yet
 var animation_prefix = ""
 
@@ -266,6 +271,10 @@ func _on_Yuki_area_entered(area):
                 dodge()
                 
         elif area.type == "p":
+            ice = true
+            ice_count = ice_count_max
+            speed = 0
+            area.position = position
             area.queue_die()
         
         elif area.type == "y":
@@ -309,10 +318,23 @@ func stop_move_to_player(_player):
 func _on_Beats_timeout():
     if not omni_gate_used and ji_ready:
         do_actions(get_parent().get_node("Ji"))
+    
+    if ice:
+        if ice_count > 0:
+            ice_count -= 1
+        else:
+            print("yo")
+            if !ice_animation_started:
+                var sprite = $AnimatedSprite
+                sprite.stop()
+                sprite.animation = "ice"
+                sprite.frame = 0
+                sprite.play()
+                ice_animation_started = true
         
 func _on_AnimatedSprite_animation_finished():
     var animated_sprite = get_node("AnimatedSprite")
-    if animated_sprite.animation != "default":
+    if animated_sprite.animation != "default" && animated_sprite.animation != "ice":
         animated_sprite.animation = "default"
         animated_sprite.play("default")
 
@@ -320,6 +342,9 @@ var ji_ready = false
 
 func _process(delta):
     if !ji_ready:
+        return
+    
+    if ice_animation_started:
         return
     
     if speed > 0.000001 and direction.length() > 0.000001:

@@ -72,6 +72,8 @@ func _process(delta):
                 radius = 0
                 queue_free()
             var scale_delta = displacement.length() * radius / 1000
+            if scale_delta == 0:
+                return
             scale.x += delta
             scale.y += delta
             var speed_delta = - (1 - .5 / scale_delta)

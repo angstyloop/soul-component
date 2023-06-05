@@ -53,6 +53,7 @@ var omni_count_max = 16
 var omni_animation_started = false
 var omni_animation_count = 0
 var omni_animation_count_max = 8
+var omni_location = "Omni"
 
 var dragonfly_mode
 var dragonfly_animation_started
@@ -172,6 +173,7 @@ func stand(_delta):
     
 func move(direction_index, delta):
     #print("move")
+    print(position)
     
     if speed == 0:
         speed = initial_speed
@@ -661,6 +663,7 @@ func _on_Beats_timeout():
         var sprite = $AnimatedSprite
         
         if !omni_animation_started:
+            $CollisionShape2D.disabled = true
             sprite.stop()
             sprite.animation = "exit"
             sprite.frame = 0
@@ -675,7 +678,7 @@ func _on_Beats_timeout():
             omni_count -= 1
         else:
             var tree = get_tree()
-            tree.change_scene("res://Omni.tscn")
+            tree.change_scene("res://%s.tscn" % omni_location)
             omni_used = false
     
     if irla_hit:

@@ -8,6 +8,7 @@ onready var camera_centered = true
 var moved_yet = false
 
 const JiBreath = preload("res://JiBreath.tscn")
+const IceWorm = preload("res://IceWorm.tscn")
 
 signal diligent_dragonfly()
 
@@ -99,3 +100,12 @@ func _on_Ji_end_dragonfly(start_position, end_position):
     
     print("end position error: %s" % dragonfly_end_position_error)
     print("start position error: %s" % dragonfly_start_position_error)
+
+
+func _on_Ground_area_exited(area):
+    if ("type" in area) and (area.type == "p"):
+        print("heyy")
+        area.speed = 0
+        var worm = IceWorm.instance()
+        worm.position = area.position
+        $World.add_child(worm)

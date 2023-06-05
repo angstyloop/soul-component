@@ -191,7 +191,6 @@ func load_game():
     f.open("user://savegame.save", File.READ)
     var data = parse_json(f.get_line())
     progress = data.progress
-    print("Ji load data: %s: ", data)
     f.close()
         
 func stand(_delta):
@@ -606,7 +605,6 @@ func die():
     if health > 0:
         health = 0
         emit_signal("player_hit", 0, 1, max_health)
-    print("game over")
     
     var perms = []
     var seen = {}

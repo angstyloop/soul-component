@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://Board.gd" type="Script" id=1]
 [ext_resource path="res://Ji.tscn" type="PackedScene" id=2]
@@ -14,9 +14,10 @@
 [ext_resource path="res://Omni.wav" type="AudioStream" id=12]
 [ext_resource path="res://icePortal.tscn" type="PackedScene" id=13]
 [ext_resource path="res://RichTextLabel.gd" type="Script" id=14]
+[ext_resource path="res://IceWorm.tscn" type="PackedScene" id=15]
 
 [sub_resource type="RectangleShape2D" id=5]
-extents = Vector2( 1000, 1000 )
+extents = Vector2( 900, 900 )
 
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 450, 450 )
@@ -39,7 +40,6 @@ position = Vector2( 999.567, 1000.77 )
 texture = ExtResource( 8 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/Ground"]
-visible = false
 position = Vector2( 1000, 1000 )
 shape = SubResource( 5 )
 
@@ -68,6 +68,9 @@ z_index = 1
 [node name="IcePortal" parent="World" instance=ExtResource( 13 )]
 position = Vector2( -6570, 7476 )
 rotation = 2.35619
+
+[node name="IceWorm" parent="World" instance=ExtResource( 15 )]
+position = Vector2( 383, -11796 )
 
 [node name="Beats" parent="." instance=ExtResource( 5 )]
 
@@ -102,12 +105,14 @@ scroll_active = false
 script = ExtResource( 14 )
 
 [connection signal="diligent_dragonfly" from="." to="RichTextLabel" method="_on_Omni_diligent_dragonfly"]
+[connection signal="area_exited" from="World/Ground" to="." method="_on_Ground_area_exited"]
 [connection signal="complete" from="World/Board" to="World/Ji" method="_on_Board_complete"]
 [connection signal="complete" from="World/Board" to="RichTextLabel" method="_on_Board_complete"]
 [connection signal="end_dragonfly" from="World/Ji" to="." method="_on_Ji_end_dragonfly"]
 [connection signal="player_hit" from="World/Ji" to="Health" method="_on_Ji_player_hit"]
 [connection signal="player_move" from="World/Ji" to="." method="_on_Ji_player_move"]
 [connection signal="player_move" from="World/Ji" to="World/Board" method="_on_Ji_player_move"]
+[connection signal="player_move" from="World/Ji" to="World/IceWorm" method="_on_Ji_player_move"]
 [connection signal="ready_to_die" from="World/Ji" to="Audio" method="_on_Ji_ready_to_die"]
 [connection signal="soul_switch" from="World/Ji" to="Soul" method="_on_Ji_soul_switch"]
 [connection signal="tree_entered" from="World/Ji" to="." method="_on_Ji_tree_entered"]

@@ -167,6 +167,7 @@ func soul_push_back(soul_index):
     #print(soul)
     if held_irla:
         held_irla.get_node("Sprite").texture = get_basic_projectile_texture(soul)
+        
 
 func stand(_delta):
     animation_prefix = "stand"
@@ -202,11 +203,12 @@ func move(direction_index, delta):
     
     if get_soul_component(soul, 3) == 4:
         animation_prefix = "cloud"
-        $AnimatedSprite.rotation = PI / 2 - direction.angle_to(directions[2])
-        $CollisionShape2D.rotation = $AnimatedSprite.rotation
+        rotation = PI / 2 - direction.angle_to(directions[2])
+        
     else:
+        if animation_prefix == "cloud":
+            rotation = 0
         animation_prefix = "walk"
-        rotation = 0
     
     #print(speed)
     #print(direction)

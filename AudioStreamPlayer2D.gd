@@ -13,3 +13,7 @@ func _on_Ji_ready_to_die():
     stream = ji_death
     autoplay = false
     play()
+
+
+func _on_Ji_ji_ready():
+    play()

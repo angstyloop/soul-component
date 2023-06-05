@@ -28,7 +28,7 @@ func _init():
     omni_gate_used = false
     damage_key = [1, -1, -1, -1]
     soul = [1, 3, 3, 3]
-    health = 20
+    health = 5#10#20
     speed = 0
     spin_speed = 0
     projectile_radius = 24
@@ -41,7 +41,7 @@ func _init():
         [], [], [], [],
         
         [START_MOVE_TO_PLAYER], [], [], [],
-        [], [], [], [],
+        [ATTACK_PLAYER], [], [], [],
         [], [], [], [],
         [], [], [], [STOP_MOVE_TO_PLAYER],
         
@@ -306,7 +306,7 @@ func stop_move_to_player(_player):
     direction = Vector2.ZERO
 
 func _on_Beats_timeout():
-    if not omni_gate_used:
+    if not omni_gate_used and ji_ready:
         do_actions(get_parent().get_node("Ji"))
         
 func _on_AnimatedSprite_animation_finished():
@@ -315,7 +315,12 @@ func _on_AnimatedSprite_animation_finished():
         animated_sprite.animation = "default"
         animated_sprite.play("default")
 
+var ji_ready = false
+
 func _process(delta):
+    if !ji_ready:
+        return
+    
     if speed > 0.000001 and direction.length() > 0.000001:
         position += speed * direction * delta
     
@@ -330,3 +335,7 @@ func _on_Ji_use_omni_gate():
     get_node("AnimatedSprite").stop()
     get_node("CollisionShape2D").disabled = true
 
+
+
+func _on_Ji_ji_ready():
+    ji_ready = true

@@ -1,7 +1,9 @@
 extends Node
 
+onready var snow = true
+onready var camera_centered = true
+
 var moved_yet = false
-var snow = true
 
 const JiBreath = preload("res://JiBreath.tscn")
 

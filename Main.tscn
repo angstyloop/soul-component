@@ -86,12 +86,12 @@ texture = ExtResource( 66 )
 shape = SubResource( 9 )
 
 [node name="Ji" parent="Arena" instance=ExtResource( 1 )]
-position = Vector2( -299, 0 )
+position = Vector2( -350, -550 )
 
 [node name="Soul" parent="Arena" instance=ExtResource( 4 )]
 
 [node name="Yuki" type="Area2D" parent="Arena"]
-position = Vector2( 432, 1 )
+position = Vector2( 470, 0 )
 script = ExtResource( 5 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Arena/Yuki"]
@@ -102,13 +102,14 @@ shape = SubResource( 5 )
 scale = Vector2( 1.1, 1.1 )
 frames = SubResource( 7 )
 animation = "heal"
-frame = 3
+frame = 6
 playing = true
 
 [node name="Beats" parent="Arena" instance=ExtResource( 2 )]
 
 [node name="AudioStreamPlayer2D" parent="Arena" instance=ExtResource( 7 )]
 position = Vector2( -551, -536 )
+autoplay = false
 
 [node name="Health" parent="Arena" instance=ExtResource( 8 )]
 
@@ -673,6 +674,11 @@ position = Vector2( 396, 465 )
 rotation = 2.8414
 
 [connection signal="child_entered_tree" from="Arena/Ji" to="Arena" method="_on_Ji_child_entered_tree"]
+[connection signal="ji_ready" from="Arena/Ji" to="Arena/Yuki" method="_on_Ji_ji_ready"]
+[connection signal="ji_ready" from="Arena/Ji" to="Arena/AudioStreamPlayer2D" method="_on_Ji_ji_ready"]
+[connection signal="player_hit" from="Arena/Ji" to="Arena/Health" method="_on_Ji_player_hit"]
+[connection signal="ready_to_die" from="Arena/Ji" to="Arena/AudioStreamPlayer2D" method="_on_Ji_ready_to_die"]
+[connection signal="soul_switch" from="Arena/Ji" to="Arena/Soul" method="_on_Ji_soul_switch"]
 [connection signal="use_omni_gate" from="Arena/Ji" to="Arena/Yuki" method="_on_Ji_use_omni_gate"]
 [connection signal="area_entered" from="Arena/Yuki" to="Arena/Yuki" method="_on_Yuki_area_entered"]
 [connection signal="area_exited" from="Arena/Yuki" to="Arena/Yuki" method="_on_Yuki_area_exited"]

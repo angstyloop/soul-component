@@ -77,6 +77,7 @@ signal player_hit(new_health, damage)
 signal use_omni_gate()
 signal ready_to_die()
 signal player_move(old_position, old_speed, old_direction, displacement)
+signal ji_ready()
 
 func _init():
     invincible = true
@@ -314,11 +315,19 @@ func _process(delta):
         if speed == 0:
             speed = 1
         speed *= 1.5
-        if position.y >= 300:
-            speed = 0
-            position.y = 450
+        
+        if get_parent().camera_centered:     
+            if position.y >= 300:
+                speed = 0
+                position.y = 450
+            else:
+                position.y += speed * delta
         else:
-            position.y += speed * delta
+            if position.y >= -150:
+                speed = 0
+                position.y = 0
+            else:
+                position.y += speed * delta
         
         return
     
@@ -339,7 +348,7 @@ func _process(delta):
             var knockback_direction = knockback_velocity / knockback_velocity.length()
             knockback_velocity += drag * delta * knockback_direction
             if knockback_animation_started:
-                rotation = Vector2.DOWN.angle_to(direction)
+                rotation = Vector2.DOWN.angle_to(knockback_direction)
             emit_signal("player_move", position, knockback_velocity.length(), knockback_direction, displacement)
             return
         if dragonfly_mode:
@@ -645,6 +654,8 @@ func _on_Beats_timeout():
             first_run = false
             first_run_animation_started = false
             held_irla.visible = true
+            print("ji_ready")
+            emit_signal("ji_ready")
     
     if omni_used:
         var sprite = $AnimatedSprite

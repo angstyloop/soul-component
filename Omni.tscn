@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Board.gd" type="Script" id=1]
 [ext_resource path="res://Ji.tscn" type="PackedScene" id=2]
@@ -9,6 +9,8 @@
 [ext_resource path="res://Audio.tscn" type="PackedScene" id=7]
 [ext_resource path="res://terrain_snow.png" type="Texture" id=8]
 [ext_resource path="res://World.gd" type="Script" id=9]
+[ext_resource path="res://Health.tscn" type="PackedScene" id=10]
+[ext_resource path="res://Soul.tscn" type="PackedScene" id=11]
 
 [sub_resource type="RectangleShape2D" id=5]
 extents = Vector2( 1000, 1000 )
@@ -56,16 +58,23 @@ shape = SubResource( 4 )
 position = Vector2( -3000, -3000 )
 
 [node name="Ji" parent="World" instance=ExtResource( 2 )]
-position = Vector2( 450, 450 )
 
 [node name="Beats" parent="." instance=ExtResource( 5 )]
 
 [node name="Audio" parent="." instance=ExtResource( 7 )]
 position = Vector2( -928, 989 )
 
+[node name="Health" parent="." instance=ExtResource( 10 )]
+position = Vector2( 860, 36 )
+
+[node name="Soul" parent="." instance=ExtResource( 11 )]
+position = Vector2( 730, 35 )
+
+[connection signal="player_hit" from="World/Ji" to="Health" method="_on_Ji_player_hit"]
 [connection signal="player_move" from="World/Ji" to="." method="_on_Ji_player_move"]
 [connection signal="player_move" from="World/Ji" to="World/Board" method="_on_Ji_player_move"]
 [connection signal="ready_to_die" from="World/Ji" to="Audio" method="_on_Ji_ready_to_die"]
+[connection signal="soul_switch" from="World/Ji" to="Soul" method="_on_Ji_soul_switch"]
 [connection signal="tree_entered" from="World/Ji" to="." method="_on_Ji_tree_entered"]
 [connection signal="use_omni_gate" from="World/Ji" to="." method="_on_Ji_use_omni_gate"]
 [connection signal="timeout" from="Beats" to="." method="_on_Beats_timeout"]

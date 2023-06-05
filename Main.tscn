@@ -1,12 +1,13 @@
-[gd_scene load_steps=44 format=2]
+[gd_scene load_steps=41 format=2]
 
 [ext_resource path="res://Ji.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Beats.tscn" type="PackedScene" id=2]
 [ext_resource path="res://yuki_stand_1.png" type="Texture" id=3]
-[ext_resource path="res://Soul.gd" type="Script" id=4]
+[ext_resource path="res://Soul.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Yuki.gd" type="Script" id=5]
 [ext_resource path="res://Arena.gd" type="Script" id=6]
 [ext_resource path="res://Audio.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Health.tscn" type="PackedScene" id=8]
 [ext_resource path="res://trap_dodge_9.png" type="Texture" id=11]
 [ext_resource path="res://trap_dodge_7.png" type="Texture" id=12]
 [ext_resource path="res://trap_dodge_4.png" type="Texture" id=13]
@@ -34,16 +35,11 @@
 [ext_resource path="res://yuki_heal_9.png" type="Texture" id=35]
 [ext_resource path="res://yuki_heal_8.png" type="Texture" id=36]
 [ext_resource path="res://yuki_heal_6.png" type="Texture" id=37]
-[ext_resource path="res://health.png" type="Texture" id=38]
-[ext_resource path="res://Health.gd" type="Script" id=39]
 [ext_resource path="res://IceSpikes.tscn" type="PackedScene" id=40]
 [ext_resource path="res://ice_spikes.png" type="Texture" id=66]
 
 [sub_resource type="RectangleShape2D" id=9]
 extents = Vector2( 450, 450 )
-
-[sub_resource type="RectangleShape2D" id=4]
-extents = Vector2( 101.75, 26 )
 
 [sub_resource type="CircleShape2D" id=5]
 radius = 26.3059
@@ -76,8 +72,6 @@ animations = [ {
 "speed": 5.0
 } ]
 
-[sub_resource type="RectangleShape2D" id=8]
-
 [node name="Node" type="Node"]
 
 [node name="Arena" type="Area2D" parent="."]
@@ -94,15 +88,7 @@ shape = SubResource( 9 )
 [node name="Ji" parent="Arena" instance=ExtResource( 1 )]
 position = Vector2( -299, 0 )
 
-[node name="Soul" type="Area2D" parent="Arena"]
-position = Vector2( 250, -435 )
-scale = Vector2( 0.5, 0.5 )
-z_index = 1
-script = ExtResource( 4 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Arena/Soul"]
-shape = SubResource( 4 )
-disabled = true
+[node name="Soul" parent="Arena" instance=ExtResource( 4 )]
 
 [node name="Yuki" type="Area2D" parent="Arena"]
 position = Vector2( 432, 1 )
@@ -116,7 +102,7 @@ shape = SubResource( 5 )
 scale = Vector2( 1.1, 1.1 )
 frames = SubResource( 7 )
 animation = "heal"
-frame = 2
+frame = 3
 playing = true
 
 [node name="Beats" parent="Arena" instance=ExtResource( 2 )]
@@ -124,17 +110,7 @@ playing = true
 [node name="AudioStreamPlayer2D" parent="Arena" instance=ExtResource( 7 )]
 position = Vector2( -551, -536 )
 
-[node name="Health" type="Area2D" parent="Arena"]
-position = Vector2( 400, -435 )
-z_index = 1
-script = ExtResource( 39 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Arena/Health"]
-shape = SubResource( 8 )
-disabled = true
-
-[node name="Sprite" type="Sprite" parent="Arena/Health"]
-texture = ExtResource( 38 )
+[node name="Health" parent="Arena" instance=ExtResource( 8 )]
 
 [node name="IceSpikes" parent="Arena" instance=ExtResource( 40 )]
 position = Vector2( -450, -438 )
@@ -697,8 +673,6 @@ position = Vector2( 396, 465 )
 rotation = 2.8414
 
 [connection signal="child_entered_tree" from="Arena/Ji" to="Arena" method="_on_Ji_child_entered_tree"]
-[connection signal="player_hit" from="Arena/Ji" to="Arena/Health" method="_on_Ji_player_hit"]
-[connection signal="soul_switch" from="Arena/Ji" to="Arena/Soul" method="_on_Ji_soul_switch"]
 [connection signal="use_omni_gate" from="Arena/Ji" to="Arena/Yuki" method="_on_Ji_use_omni_gate"]
 [connection signal="area_entered" from="Arena/Yuki" to="Arena/Yuki" method="_on_Yuki_area_entered"]
 [connection signal="area_exited" from="Arena/Yuki" to="Arena/Yuki" method="_on_Yuki_area_exited"]

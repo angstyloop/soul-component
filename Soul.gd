@@ -5,12 +5,12 @@ const Soul1 = preload("res://Soul1.tscn");
 const Soul2 = preload("res://Soul2.tscn");
 const Soul3 = preload("res://Soul3.tscn");
 const soul_scenes = [Soul0, Soul1, Soul2, Soul3];
-const default_scene = Soul0
+const default_scenes = [Soul0, Soul1, Soul2, Soul3]
 
 func _init():
     var offset = 0
     for i in 4:
-        var node = default_scene.instance()
+        var node = default_scenes[i].instance()
         var shape = node.get_node("CollisionShape2D").shape
         var sprite_width = shape.extents.x
         node.position[0] += offset

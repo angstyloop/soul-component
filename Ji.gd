@@ -1,6 +1,5 @@
 extends Area2D
 
-var first_run
 var window_size
 var speed
 var spin_speed
@@ -29,6 +28,11 @@ var max_health
 var armor
 var invincible
 
+var first_run = true
+var first_run_count_max = 16
+var first_run_count = first_run_count_max
+var first_run_animation_started = false
+
 var fire_shield = null
 var fire_shield_counter
 var fire_shield_cooldown_counter
@@ -42,6 +46,13 @@ const exhale_counter_max = 16
 var footstep_distance = 0
 var footstep_count = 0
 const footstep_distance_max = 10
+
+var omni_used = false
+var omni_count = 0
+var omni_count_max = 16
+var omni_animation_started = false
+var omni_animation_count = 0
+var omni_animation_count_max = 8
 
 var dragonfly_mode
 var dragonfly_animation_started
@@ -68,13 +79,14 @@ signal ready_to_die()
 signal player_move(old_position, old_speed, old_direction, displacement)
 
 func _init():
-    first_run = true
+    invincible = true
     
     window_size = OS.get_real_window_size()
     #position = Vector2(window_size[0] / 2, window_size[1] / 2)
     
-    soul = [0, 0, 0, 0]    
+    soul = [0, 1, 2, 3]    
     speed = 0
+    position = Vector2(450, -50)
     direction = Vector2.RIGHT
     
     max_health = 100
@@ -240,14 +252,19 @@ func use_fire_shield():
         add_child(fire_shield)
 
 func use_omni_gate():
-    # no cd for omni gate, since it's the pause menu essentially
+    # no cd for omni gate
     emit_signal("use_omni_gate")
-    var level = get_parent()
-    var root = level.get_parent()
-    root.remove_child(level)
-    level.call_deferred("free")
-    var omni = load("res://Omni.tscn")
-    root.add_child(omni.instance())
+    speed = 0
+    omni_used = true
+    omni_count = omni_count_max
+    if thrown_irla:
+        thrown_irla.speed = 0
+        thrown_irla.position = position
+        thrown_irla.visible = false
+    if held_irla:
+        held_irla.speed = 0
+        held_irla.position = position
+        held_irla.visible = false
 
 func disable_fire_shield():
     invincible = false
@@ -292,7 +309,27 @@ func use_dragonfly():
         start_dragonfly()
 
 func _process(delta):        
-    if (first_run):
+    if first_run:
+        # enter
+        if speed == 0:
+            speed = 1
+        speed *= 1.5
+        if position.y >= 300:
+            speed = 0
+            position.y = 450
+        else:
+            position.y += speed * delta
+        
+        return
+    
+    if omni_used:
+        if omni_animation_started:
+            invincible = true
+        if omni_animation_count == 0:
+            if speed == 0:
+                speed = 1
+            speed *= 1.5
+            position.y -= speed * delta
         return
     
     if !ready_to_die:
@@ -559,7 +596,7 @@ func die():
 
 func _on_Ji_area_entered(area):
     if "type" in area:
-        if area.type != "p" && area.type != "f" && area.type != "B":
+        if area.type != "p" && (area.type == "y" || area.type == "b"):
             if invincible && !area.ignore_invincible:
                 return
             # not own projectile a marker => take damage
@@ -591,6 +628,45 @@ func return_irla():
         add_child(new_irla)
 
 func _on_Beats_timeout():
+    if first_run:
+        var sprite = $AnimatedSprite
+        
+        if !first_run_animation_started:
+            sprite.stop()
+            sprite.animation = "enter"
+            sprite.frame = 0
+            sprite.play()
+            first_run_animation_started = true
+            
+        if first_run_count > 0:
+            first_run_count -= 1
+        else:
+            invincible = false
+            first_run = false
+            first_run_animation_started = false
+            held_irla.visible = true
+    
+    if omni_used:
+        var sprite = $AnimatedSprite
+        
+        if !omni_animation_started:
+            sprite.stop()
+            sprite.animation = "exit"
+            sprite.frame = 0
+            sprite.play()
+            omni_animation_count = omni_animation_count_max
+            omni_animation_started = true
+        
+        if omni_animation_count > 0:
+            omni_animation_count -= 1
+            
+        if omni_count > 0:
+            omni_count -= 1
+        else:
+            var tree = get_tree()
+            tree.change_scene("res://Omni.tscn")
+            omni_used = false
+    
     if irla_hit:
         if irla_hit_animation_count > 0:
             irla_hit_animation_count -= 1
@@ -679,7 +755,9 @@ func _on_BasicProjectile_tree_entered():
         held_irla.get_node("CollisionShape2D").disabled = true
         held_irla.position = direction * 2 * get_node("CollisionShape2D").shape.radius
         held_irla.get_node("Sprite").texture = get_basic_projectile_texture(soul)
-        first_run = false
+        
+        #hide irla until enter animation finishes
+        held_irla.visible = false
         
         # check the location, and disable/enable footsteps, breath, etc
         footsteps_on = false

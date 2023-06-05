@@ -51,28 +51,30 @@ func _process(delta):
             get_parent().remove_child(self)
             queue_free()
             
-    if held:
-        parent = get_parent().get_node("Yuki")
-        if parent:
-            soul = parent.soul
-            base_speed = get_base_speed(parent.soul)
-            base_damage = get_base_damage(parent.soul)
-            # NPC's are always fixed frame, so this parent.position term
-            # is here
-            position = parent.position + parent.direction * .5 * parent.radius
-            radius = parent.projectile_radius
-            held = false
-            
-    if !held:
-        var displacement = (base_speed + speed) * direction * delta
-        position += displacement
-        var radius = scale.x * parent.projectile_radius 
-        if radius > 500000:
-            queue_free()
-        var scale_delta = displacement.length() * radius / 1000
-        scale.x += delta
-        scale.y += delta
-        var speed_delta = - (1 - .5 / scale_delta)
-        speed = max(.5, speed + speed_delta)
+    parent = get_parent().get_node("Yuki")
+    
+    if parent:
+        if held:
+                soul = parent.soul
+                base_speed = get_base_speed(parent.soul)
+                base_damage = get_base_damage(parent.soul)
+                # NPC's are always fixed frame, so this parent.position term
+                # is here
+                position = parent.position + parent.direction * .5 * parent.radius
+                radius = parent.projectile_radius
+                held = false
+                
+        else:
+            var displacement = (base_speed + speed) * direction * delta
+            position += displacement
+            var radius = scale.x * parent.projectile_radius 
+            if radius > 500:
+                radius = 0
+                queue_free()
+            var scale_delta = displacement.length() * radius / 1000
+            scale.x += delta
+            scale.y += delta
+            var speed_delta = - (1 - .5 / scale_delta)
+            speed = max(.5, speed + speed_delta)
         
     rotation += angular_speed * delta

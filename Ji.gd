@@ -173,9 +173,6 @@ func stand(_delta):
     animation_prefix = "stand"
     
 func move(direction_index, delta):
-    #print("move")
-    print(position)
-    
     if speed == 0:
         speed = initial_speed
         
@@ -658,7 +655,6 @@ func _on_Beats_timeout():
             first_run = false
             first_run_animation_started = false
             held_irla.visible = true
-            print("ji_ready")
             emit_signal("ji_ready")
     
     if omni_used:

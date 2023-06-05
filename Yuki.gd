@@ -62,7 +62,7 @@ func _init():
         
         [START_MOVE_TO_PLAYER], [STOP_MOVE_TO_PLAYER], [], [],
         [], [], [], [],
-        [], [], [],
+        [], [], [], [],
 
         
         [START_MOVE_TO_PLAYER], [STOP_MOVE_TO_PLAYER], [], [ATTACK_PLAYER],

@@ -28,7 +28,8 @@ func _init():
     omni_gate_used = false
     damage_key = [1, -1, -1, -1]
     soul = [1, 3, 3, 3]
-    health = 5#10#20
+    # 5 is very easy, 10 is easy, 15 is medium, 20 is difficult
+    health = 15
     speed = 0
     spin_speed = 0
     projectile_radius = 24

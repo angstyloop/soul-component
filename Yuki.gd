@@ -69,7 +69,7 @@ func _init():
         [START_MOVE_TO_PLAYER], [STOP_MOVE_TO_PLAYER], [], [],
         [], [], [], [],
         [], [], [], [],
-
+        [], [], [], [],
         
         [START_MOVE_TO_PLAYER], [STOP_MOVE_TO_PLAYER], [], [ATTACK_PLAYER],
         [], [], [ATTACK_PLAYER], [],
@@ -168,6 +168,7 @@ func stop_spinning():
     rotation = 0
 
 func do_actions(player):
+    print(len(beat_array))
     #print(beat_counter)
     for action in beat_array[beat_counter]:
         if (action == START_MOVE_TO_PLAYER):

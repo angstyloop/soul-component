@@ -29,7 +29,7 @@ var armor
 var invincible
 
 var first_run = true
-var first_run_count_max = 16
+var first_run_count_max = 4
 var first_run_count = first_run_count_max
 var first_run_animation_started = false
 
@@ -42,7 +42,7 @@ var ready_to_die
 var die_counter
 var animation_prefix
 var exhale_counter
-const exhale_counter_max = 16
+const exhale_counter_max = 12
 var footstep_distance = 0
 var footstep_count = 0
 const footstep_distance_max = 10
@@ -52,7 +52,7 @@ var omni_count = 0
 var omni_count_max = 16
 var omni_animation_started = false
 var omni_animation_count = 0
-var omni_animation_count_max = 8
+var omni_animation_count_max = 10
 var omni_location = "Omni"
 
 var dragonfly_mode

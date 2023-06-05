@@ -40,7 +40,7 @@ func _init():
     damage_key = [1, -1, -1, -1]
     soul = [1, 3, 3, 3]
     # 5 is very easy, 10 is easy, 15 is medium, 20 is difficult
-    health = 5 # health 5 for testing. 15 normally.
+    health = 15 # health 5 for testing. 15 normally.
     speed = 0
     spin_speed = 0
     projectile_radius = 24

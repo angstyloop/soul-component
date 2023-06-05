@@ -1,7 +1,11 @@
 extends Area2D
 
 var visible_count = 0
-const visible_count_max = 32 * 100000 # factor of 10^5 for testing 
+
+# with cloud ji: 128 easy, 64 medium, 48 hard but beaten, 32 very hard (maybe impossible)
+# when using the trap instead, it's obviously easy and fast! but note that
+# for speedruns you should REALLY start counting from omni
+const visible_count_max = 48
 
 func _on_Card_area_entered(area):
     if visible:

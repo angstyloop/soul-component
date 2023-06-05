@@ -1,7 +1,7 @@
 extends Area2D
 
 var visible_count = 0
-const visible_count_max = 32
+const visible_count_max = 32 * 100000 # factor of 10^5 for testing 
 
 func _on_Card_area_entered(area):
     if visible:

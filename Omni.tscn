@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://Board.gd" type="Script" id=1]
 [ext_resource path="res://Ji.tscn" type="PackedScene" id=2]
@@ -13,6 +13,7 @@
 [ext_resource path="res://Soul.tscn" type="PackedScene" id=11]
 [ext_resource path="res://Omni.wav" type="AudioStream" id=12]
 [ext_resource path="res://icePortal.tscn" type="PackedScene" id=13]
+[ext_resource path="res://RichTextLabel.gd" type="Script" id=14]
 
 [sub_resource type="RectangleShape2D" id=5]
 extents = Vector2( 1000, 1000 )
@@ -81,22 +82,27 @@ position = Vector2( 860, 36 )
 position = Vector2( 730, 35 )
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
-visible = false
 modulate = Color( 0, 0, 0, 1 )
-margin_left = 10.0
-margin_top = 10.0
-margin_right = 510.0
-margin_bottom = 510.0
-visible_characters = 100
-percent_visible = 1.42857
-text = "Tricky Tiles
+margin_left = 11.0
+margin_top = 11.0
+margin_right = 511.0
+margin_bottom = 511.0
+bbcode_enabled = true
+bbcode_text = "Diligent Dragonfly 
 Frigid Fight
-Sharp Shooter
 Perilous Prize
-Diligent Dragonfly 
-"
+Sharp Shooter
+Tricky Tiles"
+text = "Diligent Dragonfly 
+Frigid Fight
+Perilous Prize
+Sharp Shooter
+Tricky Tiles"
 scroll_active = false
+script = ExtResource( 14 )
 
+[connection signal="complete" from="World/Board" to="World/Ji" method="_on_Board_complete"]
+[connection signal="complete" from="World/Board" to="RichTextLabel" method="_on_Board_complete"]
 [connection signal="player_hit" from="World/Ji" to="Health" method="_on_Ji_player_hit"]
 [connection signal="player_move" from="World/Ji" to="." method="_on_Ji_player_move"]
 [connection signal="player_move" from="World/Ji" to="World/Board" method="_on_Ji_player_move"]

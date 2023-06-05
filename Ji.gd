@@ -1,5 +1,7 @@
 extends Area2D
 
+var progress = [0, 0, 0, 0, 0]
+
 var window_size
 var speed
 var spin_speed
@@ -168,7 +170,24 @@ func soul_push_back(soul_index):
     if held_irla:
         held_irla.get_node("Sprite").texture = get_basic_projectile_texture(soul)
         
-
+func save_game():
+    var f = File.new()
+    f.open("user://savegame.save", File.WRITE)
+    var data = { "progress": progress } 
+    # Store the save dictionary as a new line in the save file.
+    f.store_line(to_json(data))
+    f.close()
+    
+func load_game():
+    var f = File.new()
+    if not f.file_exists("user://savegame.save"):
+        return
+    f.open("user://savegame.save", File.READ)
+    var data = parse_json(f.get_line())
+    progress = data.progress
+    print("Ji load data: %s: ", data)
+    f.close()
+        
 func stand(_delta):
     animation_prefix = "stand"
     
@@ -639,6 +658,8 @@ func return_irla():
 
 func _on_Beats_timeout():
     if first_run:
+        load_game()
+        
         var sprite = $AnimatedSprite
         
         if !first_run_animation_started:
@@ -800,3 +821,7 @@ func on_projectile_hit(projectile):
     projectile.get_node("AnimatedSprite").frame = 0
     projectile.get_node("AnimatedSprite").play()
     irla_hit_animation_count = irla_hit_animation_count_max
+
+# tricky tiles
+func _on_Board_complete():
+    progress[4] = 1

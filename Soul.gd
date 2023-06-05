@@ -35,3 +35,7 @@ func _on_Ji_soul_switch(soul):
             node.position[0] += offset
             offset += sprite_width
             add_child(node)
+
+
+func _on_Yuki_yuki():
+    pass # Replace with function body.

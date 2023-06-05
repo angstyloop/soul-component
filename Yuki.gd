@@ -1,5 +1,7 @@
 extends Area2D
 
+var progress = [0, 0, 0, 0, 0]
+
 var damage_key
 var health
 var speed
@@ -22,19 +24,23 @@ var ice_animation_started = false
 # not used yet
 var animation_prefix = ""
 
+signal die()
+
 enum {START_MOVE_TO_PLAYER,  STOP_MOVE_TO_PLAYER, ATTACK_PLAYER, START_SPINNING, STOP_SPINNING}
 
 const projectile_texture = preload("res://ice_spikes.png")
 const YukiProjectile = preload("res://YukiProjectile.tscn")
 
 func _init():
+    load_game()
+    
     #var size = OS.get_real_window_size()
     #position = Vector2(size[0] / 2, size[1] / 2)
     omni_gate_used = false
     damage_key = [1, -1, -1, -1]
     soul = [1, 3, 3, 3]
     # 5 is very easy, 10 is easy, 15 is medium, 20 is difficult
-    health = 15
+    health = 5 # health 5 for testing. 15 normally.
     speed = 0
     spin_speed = 0
     projectile_radius = 24
@@ -216,6 +222,22 @@ static func get_damage(own_soul, hit_soul):
                     damage += 1
     return damage
 
+func save_game():
+    var f = File.new()
+    f.open("user://savegame.save", File.WRITE)
+    var data = { "progress": progress } 
+    f.store_line(to_json(data))
+    f.close()
+    
+func load_game():
+    var f = File.new()
+    if not f.file_exists("user://savegame.save"):
+        return
+    f.open("user://savegame.save", File.READ)
+    var data = parse_json(f.get_line())
+    progress = data.progress
+    f.close()
+
 func take_damage(hit_soul):
     var damage = get_base_damage(hit_soul)
     for i in hit_soul:
@@ -244,10 +266,16 @@ func take_damage(hit_soul):
     #print("took damage: %s" % damage)
     print("health remaining: %s" % health)
     if health <= 0:
-        queue_free()
+        die()
 
 var air_shield_threshold_speed = 100
 
+func die():
+    progress[1] = 1
+    save_game()
+    emit_signal("die")
+    queue_free()
+    
 func dodge():
     get_node("AnimatedSprite").play("dodge")
 

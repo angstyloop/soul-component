@@ -1,5 +1,7 @@
 extends Area2D
 
+var progress = [0, 0, 0, 0, 0]
+
 var type = "B"
 
 # The length (in square units) of the (square) board.
@@ -31,6 +33,10 @@ var cards_array_height: int = n
 var pointer = Vector2(450, 450)
 
 onready var complete = false
+signal complete()
+
+func _init():
+    load_game()
 
 # Create the board
 func create_board():
@@ -149,6 +155,22 @@ func _on_Ji_player_move(old_position, old_speed, old_direction, displacement):
     else:
         card = null
 
+func save_game():
+    var f = File.new()
+    f.open("user://savegame.save", File.WRITE)
+    var data = { "progress": progress } 
+    f.store_line(to_json(data))
+    f.close()
+    
+func load_game():
+    var f = File.new()
+    if not f.file_exists("user://savegame.save"):
+        return
+    f.open("user://savegame.save", File.READ)
+    var data = parse_json(f.get_line())
+    progress = data.progress
+    f.close()
+    print("Board load data: %s: ", data)
 
 func _on_Beats_timeout():
     if complete:
@@ -161,3 +183,7 @@ func _on_Beats_timeout():
             break
     if visible:
         complete = true
+        progress[4] = 1
+        print("board signals complete")
+        save_game()
+        emit_signal("complete")

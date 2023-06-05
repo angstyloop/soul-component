@@ -56,4 +56,6 @@ func _on_Board_complete():
     load_game()
     bbcode_text = bbcode_text.replace("Tricky Tiles", "[s]Tricky Tiles[/s]")
 
-    
+func _on_Omni_diligent_dragonfly():
+    load_game()
+    bbcode_text = bbcode_text.replace("Diligent Dragonfly", "[s]Diligent Dragonfly[/s]")

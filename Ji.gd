@@ -31,7 +31,7 @@ var armor
 var invincible
 
 var first_run = true
-var first_run_count_max = 4
+var first_run_count_max = 9
 var first_run_count = first_run_count_max
 var first_run_animation_started = false
 
@@ -73,7 +73,11 @@ const FireShield = preload("res://FireShield.tscn")
 const JiBreath = preload("res://JiBreath.tscn")
 const Footsteps = preload("res://Footsteps.tscn")
 
-const dragonfly_speed = 4000
+# This high speed is what makes Diligent Dragonfly so hard. You just have to
+# count.
+var dragonfly_speed = 4000# real value: 4000, test value: 200
+var dragonfly_start_position
+var dragonfly_end_position
 
 signal soul_switch(soul)
 signal player_hit(new_health, damage)
@@ -81,6 +85,8 @@ signal use_omni_gate()
 signal ready_to_die()
 signal player_move(old_position, old_speed, old_direction, displacement)
 signal ji_ready()
+signal start_dragonfly(start_position)
+signal end_dragonfly(start_position, end_position)
 
 func _init():
     invincible = true
@@ -88,7 +94,7 @@ func _init():
     window_size = OS.get_real_window_size()
     #position = Vector2(window_size[0] / 2, window_size[1] / 2)
     
-    soul = [0, 1, 2, 3]    
+    soul = [0, 1, 2, 3]
     speed = 0
     position = Vector2(450, -50)
     direction = Vector2.RIGHT
@@ -173,7 +179,7 @@ func soul_push_back(soul_index):
 func save_game():
     var f = File.new()
     f.open("user://savegame.save", File.WRITE)
-    var data = { "progress": progress } 
+    var data = { "progress": progress }
     # Store the save dictionary as a new line in the save file.
     f.store_line(to_json(data))
     f.close()
@@ -213,7 +219,7 @@ func move(direction_index, delta):
     elif direction_index == 5:
         direction = (Vector2.RIGHT + Vector2.UP) / sqrt(2)
     elif direction_index == 6:
-        direction = (Vector2.RIGHT + Vector2.DOWN) / sqrt(2)        
+        direction = (Vector2.RIGHT + Vector2.DOWN) / sqrt(2)
     elif direction_index == 7:
         direction = (Vector2.LEFT + Vector2.DOWN) / sqrt(2)
     
@@ -311,17 +317,21 @@ func use_soul_special():
         attack()
 
 func start_dragonfly():
+    dragonfly_end_position = null
+    dragonfly_start_position = position
     dragonfly_mode = true
+    emit_signal("start_dragonfly", dragonfly_start_position)
     
     # play start_dragonfly animation
     
 func end_dragonfly():
+    dragonfly_end_position = position
     direction = Vector2.UP.rotated(rotation)
     speed = 0
     dragonfly_mode = false
     dragonfly_animation_started = false
     rotation = 0
-    # play end_dragonfly animation
+    emit_signal("end_dragonfly", dragonfly_start_position, dragonfly_end_position)
 
 func use_dragonfly():
     if dragonfly_mode:
@@ -329,14 +339,14 @@ func use_dragonfly():
     else:
         start_dragonfly()
 
-func _process(delta):        
+func _process(delta):
     if first_run:
         # enter
         if speed == 0:
             speed = 1
         speed *= 1.5
         
-        if get_parent().camera_centered:     
+        if get_parent().camera_centered:
             if position.y >= 300:
                 speed = 0
                 position.y = 450
@@ -453,7 +463,7 @@ func _process(delta):
     if speed <= 0:
         speed = 0
     elif speed > stopping_speed:
-        speed -= drag * speed * delta   
+        speed -= drag * speed * delta
     else:
         speed -= drag * stopping_speed * delta
 
@@ -534,7 +544,7 @@ func _process(delta):
     # hang onto the previous delta in case we need to use it to calculate stuff
     last_delta = delta
         
-func take_damage(hit_base_damage, hit_soul, hit_direction):    
+func take_damage(hit_base_damage, hit_soul, hit_direction):
     knockback(hit_soul, hit_direction)
         
     var damage = hit_base_damage
@@ -592,7 +602,7 @@ func queue_die():
     drag = 12
     ready_to_die = true
     
-func die():  
+func die():
     if health > 0:
         health = 0
         emit_signal("player_hit", 0, 1, max_health)
@@ -612,7 +622,7 @@ func die():
                         perms.append([i, j, k, l])
                         seen[s] = true
     
-    for i in 35:     
+    for i in 35:
         var soul = perms[i]
         var projectile = BasicProjectile.instance()
         projectile.direction = Vector2.RIGHT.rotated(i * 2 * PI / 35)
@@ -825,3 +835,7 @@ func on_projectile_hit(projectile):
 # tricky tiles
 func _on_Board_complete():
     progress[4] = 1
+
+
+func _on_Omni_diligent_dragonfly():
+    pass # Replace with function body.

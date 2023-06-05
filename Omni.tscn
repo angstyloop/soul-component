@@ -101,8 +101,10 @@ Tricky Tiles"
 scroll_active = false
 script = ExtResource( 14 )
 
+[connection signal="diligent_dragonfly" from="." to="RichTextLabel" method="_on_Omni_diligent_dragonfly"]
 [connection signal="complete" from="World/Board" to="World/Ji" method="_on_Board_complete"]
 [connection signal="complete" from="World/Board" to="RichTextLabel" method="_on_Board_complete"]
+[connection signal="end_dragonfly" from="World/Ji" to="." method="_on_Ji_end_dragonfly"]
 [connection signal="player_hit" from="World/Ji" to="Health" method="_on_Ji_player_hit"]
 [connection signal="player_move" from="World/Ji" to="." method="_on_Ji_player_move"]
 [connection signal="player_move" from="World/Ji" to="World/Board" method="_on_Ji_player_move"]

@@ -17,6 +17,31 @@ var invincible = false
 var heals = true
 const base_drag = 10
 
+var progress = [0, 0, 0, 0, 0]
+
+signal sharp_shooter()
+signal perilous_prize()
+
+func _init():
+    load_game()
+
+func save_game():
+    var f = File.new()
+    f.open("user://savegame.save", File.WRITE)
+    var data = { "progress": progress }
+    # Store the save dictionary as a new line in the save file.
+    f.store_line(to_json(data))
+    f.close()
+    
+func load_game():
+    var f = File.new()
+    if not f.file_exists("user://savegame.save"):
+        return
+    f.open("user://savegame.save", File.READ)
+    var data = parse_json(f.get_line())
+    progress = data.progress
+    f.close()
+
 static func get_soul_component(soul, i):
     var sum = 0
     for j in soul:
@@ -57,10 +82,6 @@ func take_damage(hit_base_damage, hit_soul, hit_direction):
         return
         
     var damage = hit_base_damage
-    print("base_damage: %s" % hit_base_damage)
-    
-    print("hit_soul")
-    print(hit_soul)
     
     for i in hit_soul:
         if i == 3:
@@ -90,17 +111,12 @@ func take_damage(hit_base_damage, hit_soul, hit_direction):
                     if j == strength:
                         damage -= 1
     
-    print("damage: %s" % damage)
-    
     health -= damage
     
-    print("health: %s" % health)
-    
+
     if damage > 0:
-        print("knockback. %s remains." % health)
         knockback(hit_soul, hit_direction)
     elif damage < 0:
-        print("heal")
         heal(damage)
     
     if health <= 0:
@@ -139,13 +155,24 @@ func _process(delta):
             knockback_velocity = Vector2.ZERO
 
 func die():
+    if max_hit:
+        progress[3] = 1
+        save_game()
+        print("sharp_shooter!")
+        emit_signal("sharp_shooter")
     queue_free()
+
+var max_hit = false
 
 func heal(damage):
     var t
     #print("damage: %s" % damage)
     #print("health: %s" % health)
-    t = min(int(abs(health)) / int(10), 10)
+    t = min(int(abs(health)) / int(10), 8)
+    if t >= 8:
+        max_hit = true
+        print ("max hit!")
+    print("t = %s" % t)
     scale = Vector2(t, t)
     $AnimatedSprite.scale = Vector2(t, t)
     $CollisionShape2D.scale = Vector2(t, t)
@@ -156,7 +183,14 @@ func heal(damage):
 
 
 func _on_Trap_area_entered(area):
-    if area and ("type" in area) and area.type == "b":
-        take_damage(area.base_damage, area.soul, area.position.direction_to(position))
-        area.hit = true
+    if area and ("type" in area):
+        if area.type == "b":
+            take_damage(area.base_damage, area.soul, area.position.direction_to(position))
+            area.hit = true
+        elif area.type == "p":
+            if max_hit && area.invincible and area.dragonfly_mode:
+                if !progress[2]:
+                    progress[2] = 1
+                    save_game()
+                    emit_signal("perilous prize")
 

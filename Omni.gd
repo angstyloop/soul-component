@@ -104,7 +104,6 @@ func _on_Ji_end_dragonfly(start_position, end_position):
 
 func _on_Ground_area_exited(area):
     if ("type" in area) and (area.type == "p"):
-        print("heyy")
         area.speed = 0
         var worm = IceWorm.instance()
         worm.position = area.position

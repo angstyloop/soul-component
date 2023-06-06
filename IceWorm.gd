@@ -89,11 +89,10 @@ func _on_IceWorm_area_entered(area):
 var safe_zone_radius = 5000
 
 func _on_Ji_player_move(old_position, old_speed, old_direction, displacement):
-    print("player move")
-    
     old_player_position = old_position
 
-    if old_position.length() > safe_zone_radius:
+    # The danger zone is outside of the safe circle plus the fourth quadrant (which has a negative y coordinate in this coord system)
+    if (old_position.length() > safe_zone_radius) and not (old_position.x < 0 and old_position.y < 0):
         visible = true
         direction = position.direction_to(old_position) 
         var d = (old_position - position).length()   

@@ -17,7 +17,6 @@ func load_game():
     f.open("user://savegame.save", File.READ)
     var data = parse_json(f.get_line())
     progress = data.progress
-    print("label load data: %s: ", data)
     f.close()
 
 func _init():
@@ -25,27 +24,22 @@ func _init():
     
     if progress[0] == 1:
         var name = "Diligent Dragonfly"
-        print(name)
         bbcode_text = bbcode_text.replace(name, "[s]%s[/s]" % name)
             
     if progress[1] == 1:
         var name = "Frigid Fight"
-        print(name)
         bbcode_text = bbcode_text.replace(name, "[s]%s[/s]" % name)
             
     if progress[2] == 1:
         var name = "Perilous Prize"
-        print(name)
         bbcode_text = bbcode_text.replace(name, "[s]%s[/s]" % name)
             
     if progress[3] == 1:
-        var name = "Sharp shooter"
-        print(name)
+        var name = "Sharp Shooter"
         bbcode_text = bbcode_text.replace(name, "[s]%s[/s]" % name)
             
     if progress[4] == 1:
         var name = "Tricky Tiles"
-        print(name)
         bbcode_text = bbcode_text.replace(name, "[s]%s[/s]" % name)
         
 func _on_Ji_yuki_die():
@@ -59,3 +53,14 @@ func _on_Board_complete():
 func _on_Omni_diligent_dragonfly():
     load_game()
     bbcode_text = bbcode_text.replace("Diligent Dragonfly", "[s]Diligent Dragonfly[/s]")
+
+
+func _on_Trap_sharp_shooter():
+    load_game()
+    bbcode_text = bbcode_text.replace("Sharp Shooter", "[s]Sharp Shooter[/s]")
+
+
+func _on_Trap_perilous_prize():
+    load_game()
+    bbcode_text = bbcode_text.replace("Perilous Prize", "[s]Perilous Prize[/s]")
+    

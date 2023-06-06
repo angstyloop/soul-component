@@ -689,6 +689,7 @@ position = Vector2( 396, 465 )
 rotation = 2.8414
 
 [connection signal="child_entered_tree" from="Ji" to="." method="_on_Ji_child_entered_tree"]
+[connection signal="ji_die" from="Ji" to="." method="_on_Ji_ji_die"]
 [connection signal="ji_ready" from="Ji" to="Yuki" method="_on_Ji_ji_ready"]
 [connection signal="ji_ready" from="Ji" to="AudioStreamPlayer2D" method="_on_Ji_ji_ready"]
 [connection signal="player_hit" from="Ji" to="Health" method="_on_Ji_player_hit"]

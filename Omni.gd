@@ -108,3 +108,10 @@ func _on_Ground_area_exited(area):
         var worm = IceWorm.instance()
         worm.position = area.position
         $World.add_child(worm)
+
+func _on_Ji_ji_die(ji_die_position):
+    var ice_portal = $World/IcePortal
+    if (ice_portal.position - ji_die_position).length() < 4 * ice_portal.get_node("CollisionShape2D").shape.extents.x:
+        get_tree().change_scene("res://Arena.tscn")
+    else:
+        get_tree().reload_current_scene()

@@ -111,6 +111,7 @@ script = ExtResource( 14 )
 [connection signal="perilous_prize" from="World/Trap" to="RichTextLabel" method="_on_Trap_perilous_prize"]
 [connection signal="sharp_shooter" from="World/Trap" to="RichTextLabel" method="_on_Trap_sharp_shooter"]
 [connection signal="end_dragonfly" from="World/Ji" to="." method="_on_Ji_end_dragonfly"]
+[connection signal="ji_die" from="World/Ji" to="." method="_on_Ji_ji_die"]
 [connection signal="player_hit" from="World/Ji" to="Health" method="_on_Ji_player_hit"]
 [connection signal="player_move" from="World/Ji" to="." method="_on_Ji_player_move"]
 [connection signal="player_move" from="World/Ji" to="World/Board" method="_on_Ji_player_move"]

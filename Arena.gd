@@ -55,3 +55,7 @@ func reverse_velocity(ji, zero_or_one):
     ji.speed[0] = ji.speed[2]
     ji.speed[2] = t
     ji.direction[zero_or_one] = -ji.direction[zero_or_one]
+
+func _on_Ji_ji_die(ji_die_position):
+    get_tree().change_scene("res://Omni.tscn")
+    

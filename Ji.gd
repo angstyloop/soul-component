@@ -87,6 +87,7 @@ signal player_move(old_position, old_speed, old_direction, displacement)
 signal ji_ready()
 signal start_dragonfly(start_position)
 signal end_dragonfly(start_position, end_position)
+signal ji_die(ji_Die_position)
 
 func _init():
     invincible = true
@@ -339,6 +340,9 @@ func use_dragonfly():
         start_dragonfly()
 
 func _process(delta):
+    if ji_free:
+        return
+        
     if first_run:
         # enter
         if speed == 0:
@@ -609,6 +613,9 @@ func die():
     var perms = []
     var seen = {}
     
+    visible = false
+    $CollisionShape2D.disabled = true
+    
     for i in 4:
         for j in 4:
             for k in 4:
@@ -628,8 +635,13 @@ func die():
         projectile.get_node("CollisionShape2D").disabled = true
         projectile.get_node("Sprite").texture = get_basic_projectile_texture(soul)
         get_parent().add_child(projectile)
+    
+    ji_free = true
+    ji_free_counter = ji_free_counter_max
 
-    queue_free()
+var ji_free_counter = 0
+var ji_free_counter_max = 16
+var ji_free = false
 
 func _on_Ji_area_entered(area):
     if "type" in area:
@@ -686,6 +698,20 @@ func _on_Beats_timeout():
             held_irla.visible = true
             emit_signal("ji_ready")
     
+    if ji_free:
+        if ji_free_counter > 0:
+            ji_free_counter -= 1
+        else:
+            queue_free()
+            emit_signal("ji_die", position)
+            ji_free = false
+    elif ready_to_die:
+        #print(die_counter)
+        if die_counter > 0:
+            die_counter -= 1
+        else:
+            die()
+    
     if omni_used:
         var sprite = $AnimatedSprite
         
@@ -741,13 +767,6 @@ func _on_Beats_timeout():
         if !dragonfly_animation_started:
             sprite.play("dragonfly")
             dragonfly_animation_started = true
-    
-    if ready_to_die:
-        #print(die_counter)
-        if die_counter > 0:
-            die_counter -= 1
-        else:
-            die()
     
     if fire_shield_counter > 0:
         fire_shield_counter -= 1
